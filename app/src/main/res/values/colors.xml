@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="bg_dark">#0A0E1A</color>
+    <color name="card_dark">#131A2C</color>
+    <color name="green_primary">#00F5A0</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8A93A8</color>
+    <color name="field_bg">#131A2C</color>
+    <color name="field_border">#2A3348</color>
+    <color name="btn_social">#101626</color>
+    <color name="error_red">#FF4D6D</color>
 </resources>

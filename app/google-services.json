@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "589654593017",
+    "project_id": "budgetai-9106c",
+    "storage_bucket": "budgetai-9106c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589654593017:android:74a87561169c6a975b4128",
+        "android_client_info": {
+          "package_name": "com.example.budgetai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAiVnCPLh_oquwyQaaFr0mbLrt5IFtdlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
