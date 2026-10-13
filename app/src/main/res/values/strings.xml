@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">BudgetAI</string>
+    <string-array name="frecuencias_ingreso">
+        <item>Semanal</item>
+        <item>Quincenal</item>
+        <item>Mensual</item>
+    </string-array>
+
+    <string-array name="objetivos_financieros">
+        <item>Comprar casa</item>
+        <item>Comprar departamento / Enganche</item>
+        <item>Fondo de emergencia</item>
+        <item>Pagar deudas</item>
+        <item>Viaje</item>
+        <item>Educación</item>
+        <item>Jubilación</item>
+        <item>Otro</item>
+    </string-array>
+
+    <string-array name="monedas">
+        <item>COP - Peso Colombiano</item>
+        <item>MXN - Peso Mexicano</item>
+        <item>USD - Dólar Estadounidense</item>
+        <item>EUR - Euro</item>
+        <item>PEN - Sol Peruano</item>
+        <item>CLP - Peso Chileno</item>
+        <item>ARS - Peso Argentino</item>
+    </string-array>
+
+    <string-array name="idiomas">
+        <item>Español (Latinoamérica)</item>
+        <item>English (US)</item>
+    </string-array>
 </resources>

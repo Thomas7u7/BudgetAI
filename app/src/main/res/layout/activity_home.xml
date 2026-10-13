@@ -8,69 +8,88 @@
     android:padding="24dp">
 
     <!-- Header: logo + avatar -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <FrameLayout
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@drawable/bg_button_primary">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_sparkle" />
-        </FrameLayout>
-
-        <TextView
+        <!-- Logo (izquierda) -->
+        <LinearLayout
+            android:id="@+id/logoContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Budget"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:fontFamily="@font/outfit_bold"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="AI"
-            android:textColor="@color/green_primary"
-            android:textSize="18sp"
-            android:fontFamily="@font/outfit_bold"/>
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_button_primary">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"/>
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_sparkle" />
+            </FrameLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Budget"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:fontFamily="@font/outfit_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AI"
+                android:textColor="@color/green_primary"
+                android:textSize="18sp"
+                android:fontFamily="@font/outfit_bold"/>
+        </LinearLayout>
+
+        <!-- Nombre (derecha, antes del avatar) -->
         <TextView
             android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Carlos M."
+            android:text="Usuario"
             android:textColor="@color/text_primary"
             android:textSize="13sp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/geist_semibold"/>
+            android:maxWidth="110dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/geist_semibold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivAvatarHome"
+            android:layout_marginEnd="8dp"/>
 
+        <!-- Avatar (extremo derecho) -->
         <ImageView
+            android:id="@+id/ivAvatarHome"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@android:drawable/ic_menu_myplaces"
             android:background="@drawable/bg_circle_avatar"
             android:padding="6dp"
-            app:tint="@color/text_secondary"/>
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
+            app:tint="@color/text_secondary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Punto central invisible -->
     <View
@@ -162,10 +181,10 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
+            android:padding="12dp"
             android:src="@android:drawable/ic_menu_myplaces"
-            app:tint="@color/text_primary"/>
+            app:tint="@color/text_primary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -307,10 +326,10 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
+            android:padding="12dp"
             android:src="@android:drawable/ic_menu_sort_by_size"
-            app:tint="@color/text_primary"/>
+            app:tint="@color/text_primary" />
 
         <TextView
             android:layout_width="wrap_content"

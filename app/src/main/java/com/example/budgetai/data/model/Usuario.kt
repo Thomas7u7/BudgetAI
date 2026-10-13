@@ -7,13 +7,43 @@ data class Usuario(
     val uid: String = "",
     val nombreCompleto: String = "",
     val correo: String = "",
-    val fotoUrl: String? = null,
+    val telefono: String? = null,
+    val fotoBase64: String? = null,
     val moneda: String = "COP",
     @PropertyName("fechaCreacion")
     val fechaCreacion: Timestamp? = null,
     @PropertyName("ultimoAcceso")
-    val ultimoAcceso: Timestamp? = null
+    val ultimoAcceso: Timestamp? = null,
+    val informacionFinanciera: InformacionFinanciera? = null,
+    val preferencias: Preferencias = Preferencias(),
+    val seguridad: Seguridad = Seguridad()
 ) {
-    // Firestore necesita un constructor vacío para deserializar
-    constructor() : this("", "", "", null, "COP", null, null)
+    constructor() : this(
+        "", "", "", null, null, "COP", null, null, null, Preferencias(), Seguridad()
+    )
+}
+
+data class InformacionFinanciera(
+    val ingresoMensual: Double = 0.0,
+    val frecuenciaIngresos: String = "Mensual",
+    val objetivoFinanciero: String = "",
+    val ahorroMensualEsperado: Double = 0.0
+) {
+    constructor() : this(0.0, "Mensual", "", 0.0)
+}
+
+data class Preferencias(
+    val moneda: String = "COP",
+    val idioma: String = "Español",
+    val alertasPresupuesto: Boolean = true,
+    val recomendacionesIA: Boolean = true,
+    val recordatoriosMetas: Boolean = false
+) {
+    constructor() : this("COP", "Español", true, true, false)
+}
+
+data class Seguridad(
+    val biometriaHabilitada: Boolean = false
+) {
+    constructor() : this(false)
 }

@@ -42,6 +42,15 @@ class LoginActivity : AppCompatActivity() {
         val btnApple = findViewById<Button>(R.id.btnApple)
         val tvCreateAccount = findViewById<TextView>(R.id.tvCreateAccount)
 
+        // Resaltado dinámico del campo con foco
+        etEmail.setOnFocusChangeListener { _, tieneFoco ->
+            etEmail.setBackgroundResource(if (tieneFoco) R.drawable.bg_field_focused else R.drawable.bg_field)
+        }
+
+        etPassword.setOnFocusChangeListener { _, tieneFoco ->
+            etPassword.setBackgroundResource(if (tieneFoco) R.drawable.bg_field_focused else R.drawable.bg_field)
+        }
+
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
@@ -75,8 +84,8 @@ class LoginActivity : AppCompatActivity() {
 
                 is AuthState.Success -> {
                     setLoadingState(false)
-                    val intent = android.content.Intent(this, HomeActivity::class.java).apply {
-                        flags = android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK or android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    val intent = Intent(this, HomeActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                     startActivity(intent)
                     finish()

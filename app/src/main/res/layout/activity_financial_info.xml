@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_dark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/btnBack"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:gravity="center"
+                    android:text="←"
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Información Financiera"
+                    android:textColor="@color/text_primary"
+                    android:textSize="19sp"
+                    android:fontFamily="@font/outfit_bold"/>
+            </LinearLayout>
+
+            <!-- Banner informativo -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_badge"
+                android:padding="14dp"
+                android:layout_marginTop="20dp">
+
+                <FrameLayout
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/bg_button_primary">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_sparkle"/>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Optimizado por BudgetAI"
+                        android:textColor="@color/green_primary"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/geist_semibold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Estos datos permiten al motor de IA generar planes de ahorro ultra-personalizados."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/geist_regular"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Ingreso mensual -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="INGRESO MENSUAL (COP)"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <EditText
+                android:id="@+id/etIngreso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:drawableStart="@android:drawable/ic_menu_sort_by_size"
+                android:drawableTint="@color/text_secondary"
+                android:drawablePadding="10dp"
+                android:hint="$0"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/outfit_regular"
+                android:inputType="number"
+                android:singleLine="true"/>
+
+            <!-- Frecuencia de ingresos -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="FRECUENCIA DE INGRESOS"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <Spinner
+                android:id="@+id/spFrecuencia"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:entries="@array/frecuencias_ingreso"
+                android:popupBackground="@color/field_bg"
+                android:spinnerMode="dropdown"/>
+
+            <!-- Objetivo financiero -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="OBJETIVO FINANCIERO PRINCIPAL"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <Spinner
+                android:id="@+id/spObjetivo"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:entries="@array/objetivos_financieros"
+                android:popupBackground="@color/field_bg"
+                android:spinnerMode="dropdown"/>
+
+            <!-- Ahorro mensual esperado -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="AHORRO MENSUAL ESPERADO"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <EditText
+                android:id="@+id/etAhorroEsperado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:drawableStart="@android:drawable/ic_menu_save"
+                android:drawableTint="@color/text_secondary"
+                android:drawablePadding="10dp"
+                android:hint="$0"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/outfit_regular"
+                android:inputType="number"
+                android:singleLine="true"/>
+
+            <!-- Botón guardar -->
+            <Button
+                android:id="@+id/btnGuardar"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bg_button_primary"
+                android:backgroundTint="@null"
+                android:text="Guardar configuración"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:fontFamily="@font/geist_bold"
+                android:textSize="16sp"/>
+            <include layout="@layout/layout_status_banner"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Overlay de loading -->
+    <LinearLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#CC0A0E1A"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="@color/green_primary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Guardando configuración..."
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:fontFamily="@font/geist_regular"/>
+    </LinearLayout>
+
+</FrameLayout>

@@ -16,4 +16,5 @@
     <color name="field_border">#2A3348</color>
     <color name="btn_social">#101626</color>
     <color name="error_red">#FF4D6D</color>
+    <color name="warning_amber">#F5A623</color>
 </resources>

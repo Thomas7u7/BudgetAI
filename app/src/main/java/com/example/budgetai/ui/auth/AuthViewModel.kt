@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.budgetai.data.model.AuthErrorType
 import com.example.budgetai.data.model.AuthState
 import com.example.budgetai.data.repository.AuthRepository
+import com.example.budgetai.util.mensajeAmigable
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -39,7 +40,7 @@ class AuthViewModel : ViewModel() {
             } catch (e: FirebaseAuthInvalidCredentialsException) {
                 _authState.value = AuthState.Error(AuthErrorType.EMAIL_INVALIDO, "Correo electrónico inválido")
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(AuthErrorType.ERROR_DESCONOCIDO, e.message ?: "Error desconocido")
+                _authState.value = AuthState.Error(AuthErrorType.ERROR_DESCONOCIDO, e.mensajeAmigable())
             }
         }
     }
@@ -60,7 +61,7 @@ class AuthViewModel : ViewModel() {
             } catch (e: FirebaseAuthInvalidCredentialsException) {
                 _authState.value = AuthState.Error(AuthErrorType.CREDENCIALES_INCORRECTAS, "Correo o contraseña incorrectos")
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(AuthErrorType.ERROR_DESCONOCIDO, e.message ?: "Error desconocido")
+                _authState.value = AuthState.Error(AuthErrorType.ERROR_DESCONOCIDO, e.mensajeAmigable())
             }
         }
     }
@@ -79,7 +80,7 @@ class AuthViewModel : ViewModel() {
             } catch (e: FirebaseAuthInvalidUserException) {
                 _authState.value = AuthState.Error(AuthErrorType.CREDENCIALES_INCORRECTAS, "No existe una cuenta con ese correo")
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(AuthErrorType.ERROR_RED, e.message ?: "Error de conexión")
+                _authState.value = AuthState.Error(AuthErrorType.ERROR_RED, e.mensajeAmigable())
             }
         }
     }

@@ -36,5 +36,10 @@
 
         <activity android:name=".RegistroSuccessActivity" android:exported="false"/>
         <activity android:name=".HomeActivity" android:exported="false"/>
+        <activity android:name=".MyProfileActivity" android:exported="false"/>
+        <activity android:name=".EditProfileActivity" android:exported="false"/>
+        <activity android:name=".FinancialInfoActivity" android:exported="false"/>
+        <activity android:name=".PreferencesActivity" android:exported="false"/>
+        <activity android:name=".SecurityActivity" android:exported="false"/>
     </application>
 </manifest>
