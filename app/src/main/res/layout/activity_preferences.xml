@@ -59,6 +59,7 @@
                 android:background="@drawable/bg_field"
                 android:entries="@array/monedas"
                 android:popupBackground="@color/field_bg"
+                style="@style/SpinnerPopupStyle"
                 android:spinnerMode="dropdown"/>
 
             <!-- Idioma -->
@@ -79,6 +80,7 @@
                 android:background="@drawable/bg_field"
                 android:entries="@array/idiomas"
                 android:popupBackground="@color/field_bg"
+                style="@style/SpinnerPopupStyle"
                 android:spinnerMode="dropdown"/>
 
             <!-- Notificaciones e IA -->

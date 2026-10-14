@@ -64,7 +64,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@android:drawable/ic_lock_idle_lock"
+                    android:src="@drawable/ic_m3_lock"
                     app:tint="@color/green_primary"/>
 
                 <LinearLayout
@@ -112,7 +112,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@android:drawable/ic_menu_myplaces"
+                    android:src="@drawable/ic_m3_person"
                     app:tint="@color/green_primary"/>
 
                 <LinearLayout
@@ -170,7 +170,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@android:drawable/ic_delete"
+                    android:src="@drawable/ic_m3_delete"
                     app:tint="@color/error_red"/>
 
                 <TextView

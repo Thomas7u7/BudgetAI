@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_field"
-                android:drawableStart="@android:drawable/ic_menu_sort_by_size"
+                android:drawableStart="@drawable/ic_m3_bar_chart"
                 android:drawableTint="@color/text_secondary"
                 android:drawablePadding="10dp"
                 android:hint="$0"
@@ -132,6 +132,7 @@
                 android:background="@drawable/bg_field"
                 android:entries="@array/frecuencias_ingreso"
                 android:popupBackground="@color/field_bg"
+                style="@style/SpinnerPopupStyle"
                 android:spinnerMode="dropdown"/>
 
             <!-- Objetivo financiero -->
@@ -152,6 +153,7 @@
                 android:background="@drawable/bg_field"
                 android:entries="@array/objetivos_financieros"
                 android:popupBackground="@color/field_bg"
+                style="@style/SpinnerPopupStyle"
                 android:spinnerMode="dropdown"/>
 
             <!-- Ahorro mensual esperado -->

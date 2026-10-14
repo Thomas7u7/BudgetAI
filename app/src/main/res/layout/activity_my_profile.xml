@@ -56,7 +56,7 @@
                     android:id="@+id/ivAvatar"
                     android:layout_width="88dp"
                     android:layout_height="88dp"
-                    android:src="@android:drawable/ic_menu_myplaces"
+                    android:src="@drawable/ic_m3_person"
                     android:background="@drawable/bg_circle_avatar"
                     android:padding="20dp"
                     android:scaleType="centerCrop"
@@ -113,7 +113,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_edit"
+                    android:src="@drawable/ic_m3_edit"
                     app:tint="@color/green_primary"/>
 
                 <LinearLayout
@@ -161,7 +161,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_sort_by_size"
+                    android:src="@drawable/ic_m3_bar_chart"
                     app:tint="@color/green_primary"/>
 
                 <LinearLayout
@@ -209,7 +209,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_preferences"
+                    android:src="@drawable/ic_m3_tune"
                     app:tint="@color/green_primary"/>
 
                 <LinearLayout
@@ -257,7 +257,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_lock_idle_lock"
+                    android:src="@drawable/ic_m3_lock"
                     app:tint="@color/green_primary"/>
 
                 <LinearLayout
@@ -306,7 +306,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_lock_power_off"
+                    android:src="@drawable/ic_m3_logout"
                     app:tint="@color/error_red"/>
 
                 <TextView

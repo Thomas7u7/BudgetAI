@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_field"
-        android:drawableStart="@android:drawable/ic_lock_idle_lock"
+        android:drawableStart="@drawable/ic_m3_lock"
         android:drawableTint="@color/text_secondary"
         android:drawablePadding="10dp"
         android:hint="Tu contraseña"

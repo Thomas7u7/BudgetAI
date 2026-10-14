@@ -41,6 +41,9 @@ class FinancialInfoActivity : AppCompatActivity() {
         loadingOverlay = findViewById(R.id.loadingOverlay)
         statusBanner = findViewById(R.id.statusBanner)
 
+        configurarSpinnerOscuro(spFrecuencia, R.array.frecuencias_ingreso)
+        configurarSpinnerOscuro(spObjetivo, R.array.objetivos_financieros)
+
         findViewById<TextView>(R.id.btnBack).setOnClickListener { finish() }
 
         btnGuardar.setOnClickListener {
@@ -169,10 +172,37 @@ class FinancialInfoActivity : AppCompatActivity() {
         }
     }
 
+    private fun configurarSpinnerOscuro(spinner: Spinner, arrayResId: Int) {
+        val opciones = resources.getStringArray(arrayResId)
+        val adapter = object : ArrayAdapter<String>(
+            this, android.R.layout.simple_spinner_item, opciones
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: android.view.ViewGroup): View {
+                val view = super.getView(position, convertView, parent) as TextView
+                view.setTextColor(resources.getColor(R.color.text_primary, theme))
+                view.setPadding(0, 0, 0, 0)
+                view.gravity = android.view.Gravity.CENTER_VERTICAL
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: android.view.ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent) as TextView
+                view.setTextColor(resources.getColor(R.color.text_primary, theme))
+                view.setBackgroundColor(resources.getColor(R.color.field_bg, theme))
+                val padPx = (14 * resources.displayMetrics.density).toInt()
+                val padHorizontalPx = (16 * resources.displayMetrics.density).toInt()
+                view.setPadding(padHorizontalPx, padPx, padHorizontalPx, padPx)
+                view.gravity = android.view.Gravity.CENTER_VERTICAL
+                return view
+            }
+        }
+        spinner.adapter = adapter
+    }
+
     private fun seleccionarEnSpinner(spinner: Spinner, valor: String) {
         if (valor.isBlank()) return
-        val adapter = spinner.adapter as? ArrayAdapter<String> ?: return
-        val posicion = (0 until adapter.count).firstOrNull { adapter.getItem(it) == valor }
+        val adapter = spinner.adapter as? ArrayAdapter<*> ?: return
+        val posicion = (0 until adapter.count).firstOrNull { adapter.getItem(it)?.toString() == valor }
         if (posicion != null) {
             spinner.setSelection(posicion)
         }
