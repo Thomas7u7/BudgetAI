@@ -172,7 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_field"
-                android:drawableStart="@android:drawable/ic_menu_save"
+                android:drawableStart="@drawable/ic_m3_savings"
                 android:drawableTint="@color/text_secondary"
                 android:drawablePadding="10dp"
                 android:hint="$0"

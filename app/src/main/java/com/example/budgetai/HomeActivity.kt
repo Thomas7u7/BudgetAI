@@ -10,12 +10,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.budgetai.data.model.UserState
 import com.example.budgetai.ui.user.UserViewModel
+import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity() {
 
     private val userViewModel: UserViewModel by viewModels()
+    private val movementViewModel: com.example.budgetai.ui.movements.MovementViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +31,6 @@ class HomeActivity : AppCompatActivity() {
             R.id.btnDisponible to "Disponible",
             R.id.btnAlertas to "Alertas",
             R.id.btnGastos to "Gastos",
-            R.id.btnMovimientos to "Movimientos",
             R.id.btnAhorro to "Ahorro"
         )
 
@@ -37,6 +39,9 @@ class HomeActivity : AppCompatActivity() {
                 Toast.makeText(this, "$nombre (próximamente)", Toast.LENGTH_SHORT).show()
             }
         }
+        findViewById<LinearLayout>(R.id.btnMovimientos).setOnClickListener {
+            startActivity(Intent(this, MovementsActivity::class.java))
+        }
 
         findViewById<ImageView>(R.id.ivAvatarHome).setOnClickListener {
             startActivity(Intent(this, MyProfileActivity::class.java))
@@ -44,11 +49,14 @@ class HomeActivity : AppCompatActivity() {
 
         observarPerfil()
         userViewModel.cargarPerfil()
+        cargarSaldo()
+
     }
 
     override fun onResume() {
         super.onResume()
         userViewModel.cargarPerfil()
+        cargarSaldo()
     }
 
     private fun observarPerfil() {
@@ -70,6 +78,20 @@ class HomeActivity : AppCompatActivity() {
                         // Mantiene el placeholder si falla
                     }
                 }
+            }
+        }
+    }
+
+    private fun cargarSaldo() {
+        lifecycleScope.launch {
+            try {
+                val repository = com.example.budgetai.data.repository.MovementRepository()
+                val saldo = repository.calcularSaldo()
+                val formato = java.text.NumberFormat.getInstance(java.util.Locale("es", "CO"))
+                val saldoFormateado = formato.format(saldo.toInt())
+                findViewById<TextView>(R.id.tvSaldo).text = "$$saldoFormateado"
+            } catch (e: Exception) {
+                // Si falla, se queda con el valor que tenga el XML (silencioso, no bloquea el Home)
             }
         }
     }

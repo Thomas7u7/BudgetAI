@@ -79,7 +79,7 @@
             android:id="@+id/ivAvatarHome"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:src="@android:drawable/ic_menu_myplaces"
+            android:src="@drawable/ic_m3_person"
             android:background="@drawable/bg_circle_avatar"
             android:padding="6dp"
             android:scaleType="centerCrop"
@@ -154,7 +154,7 @@
             android:layout_height="48dp"
             android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
-            android:src="@android:drawable/ic_menu_send"
+            android:src="@drawable/ic_m3_send"
             app:tint="@color/text_primary"/>
 
         <TextView
@@ -183,7 +183,7 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_circle_icon"
             android:padding="12dp"
-            android:src="@android:drawable/ic_menu_myplaces"
+            android:src="@drawable/ic_m3_flag"
             app:tint="@color/text_primary" />
 
         <TextView
@@ -212,7 +212,7 @@
             android:layout_height="48dp"
             android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
-            android:src="@android:drawable/ic_menu_crop"
+            android:src="@drawable/ic_m3_qr_code"
             app:tint="@color/text_primary"/>
 
         <TextView
@@ -241,7 +241,7 @@
             android:layout_height="48dp"
             android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
-            android:src="@android:drawable/ic_menu_gallery"
+            android:src="@drawable/ic_m3_wallet"
             app:tint="@color/text_primary"/>
 
         <TextView
@@ -270,7 +270,7 @@
             android:layout_height="48dp"
             android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
-            android:src="@android:drawable/ic_popup_reminder"
+            android:src="@drawable/ic_m3_notifications"
             app:tint="@color/text_primary"/>
 
         <TextView
@@ -299,7 +299,7 @@
             android:layout_height="48dp"
             android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
-            android:src="@android:drawable/ic_menu_agenda"
+            android:src="@drawable/ic_m3_receipt"
             app:tint="@color/text_primary"/>
 
         <TextView
@@ -328,7 +328,7 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_circle_icon"
             android:padding="12dp"
-            android:src="@android:drawable/ic_menu_sort_by_size"
+            android:src="@drawable/ic_m3_bar_chart"
             app:tint="@color/text_primary" />
 
         <TextView
@@ -357,7 +357,7 @@
             android:layout_height="48dp"
             android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
-            android:src="@android:drawable/ic_menu_save"
+            android:src="@drawable/ic_m3_savings"
             app:tint="@color/text_primary"/>
 
         <TextView

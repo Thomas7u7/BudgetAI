@@ -41,5 +41,8 @@
         <activity android:name=".FinancialInfoActivity" android:exported="false"/>
         <activity android:name=".PreferencesActivity" android:exported="false"/>
         <activity android:name=".SecurityActivity" android:exported="false"/>
+        <activity android:name=".MovementsActivity" android:exported="false"/>
+        <activity android:name=".RegisterMovementActivity" android:exported="false"/>
+        <activity android:name=".MovementDetailActivity" android:exported="false"/>
     </application>
 </manifest>
