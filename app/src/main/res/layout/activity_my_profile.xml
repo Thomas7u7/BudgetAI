@@ -383,7 +383,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_m3_wallet"
+                android:src="@drawable/wallet_24px"
                 app:tint="@color/text_secondary"/>
             <TextView
                 android:layout_width="wrap_content"
