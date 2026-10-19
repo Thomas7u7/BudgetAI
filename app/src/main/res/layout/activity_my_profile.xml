@@ -338,8 +338,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🏠" android:textSize="18sp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Inicio" android:textColor="@color/text_secondary" android:textSize="11sp" android:layout_marginTop="2dp"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/home_24px"
+                app:tint="@color/text_secondary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inicio"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -349,8 +359,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📊" android:textSize="18sp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Análisis" android:textColor="@color/text_secondary" android:textSize="11sp" android:layout_marginTop="2dp"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_m3_bar_chart"
+                app:tint="@color/text_secondary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Análisis"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -360,8 +380,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💳" android:textSize="18sp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tarjetas" android:textColor="@color/text_secondary" android:textSize="11sp" android:layout_marginTop="2dp"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_m3_wallet"
+                app:tint="@color/text_secondary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tarjetas"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -370,8 +400,19 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👤" android:textSize="18sp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perfil" android:textColor="@color/green_primary" android:textSize="11sp" android:layout_marginTop="2dp" android:fontFamily="@font/geist_semibold"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_m3_person"
+                app:tint="@color/green_primary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Perfil"
+                android:textColor="@color/green_primary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/geist_semibold"/>
         </LinearLayout>
 
     </LinearLayout>
