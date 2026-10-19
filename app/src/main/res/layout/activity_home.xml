@@ -80,7 +80,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@drawable/ic_m3_person"
-            android:background="@drawable/bg_circle_avatar"
+            android:background="@drawable/bg_circle_avatar_ring"
             android:padding="6dp"
             android:scaleType="centerCrop"
             android:clipToOutline="true"
@@ -108,7 +108,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:background="@drawable/bg_field"
+        android:background="@drawable/bg_card_saldo"
         android:padding="16dp"
         app:layout_constraintTop_toTopOf="@id/centerPoint"
         app:layout_constraintBottom_toBottomOf="@id/centerPoint"
@@ -146,7 +146,7 @@
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintCircle="@id/centerPoint"
-        app:layout_constraintCircleRadius="150dp"
+        app:layout_constraintCircleRadius="120dp"
         app:layout_constraintCircleAngle="0">
 
         <ImageView
@@ -175,7 +175,7 @@
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintCircle="@id/centerPoint"
-        app:layout_constraintCircleRadius="150dp"
+        app:layout_constraintCircleRadius="120dp"
         app:layout_constraintCircleAngle="310">
 
         <ImageView
@@ -204,7 +204,7 @@
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintCircle="@id/centerPoint"
-        app:layout_constraintCircleRadius="150dp"
+        app:layout_constraintCircleRadius="120dp"
         app:layout_constraintCircleAngle="50">
 
         <ImageView
@@ -233,7 +233,7 @@
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintCircle="@id/centerPoint"
-        app:layout_constraintCircleRadius="150dp"
+        app:layout_constraintCircleRadius="120dp"
         app:layout_constraintCircleAngle="270">
 
         <ImageView
@@ -262,7 +262,7 @@
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintCircle="@id/centerPoint"
-        app:layout_constraintCircleRadius="150dp"
+        app:layout_constraintCircleRadius="120dp"
         app:layout_constraintCircleAngle="90">
 
         <ImageView
@@ -291,7 +291,7 @@
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintCircle="@id/centerPoint"
-        app:layout_constraintCircleRadius="150dp"
+        app:layout_constraintCircleRadius="120dp"
         app:layout_constraintCircleAngle="230">
 
         <ImageView
@@ -320,7 +320,7 @@
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintCircle="@id/centerPoint"
-        app:layout_constraintCircleRadius="150dp"
+        app:layout_constraintCircleRadius="120dp"
         app:layout_constraintCircleAngle="130">
 
         <ImageView
@@ -349,7 +349,7 @@
         android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintCircle="@id/centerPoint"
-        app:layout_constraintCircleRadius="150dp"
+        app:layout_constraintCircleRadius="120dp"
         app:layout_constraintCircleAngle="180">
 
         <ImageView
@@ -357,7 +357,7 @@
             android:layout_height="48dp"
             android:padding="12dp"
             android:background="@drawable/bg_circle_icon"
-            android:src="@drawable/ic_m3_savings"
+            android:src="@drawable/savings_24px"
             app:tint="@color/text_primary"/>
 
         <TextView
