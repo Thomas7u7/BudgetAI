@@ -43,7 +43,10 @@ data class Preferencias(
 }
 
 data class Seguridad(
-    val biometriaHabilitada: Boolean = false
+    val biometriaHabilitada: Boolean = false,
+    val pinAhorroHash: String? = null,
+    val intentosFallidosPin: Int = 0,
+    val bloqueadoHasta: Timestamp? = null
 ) {
-    constructor() : this(false)
+    constructor() : this(false, null, 0, null)
 }
