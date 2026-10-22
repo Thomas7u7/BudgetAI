@@ -199,4 +199,15 @@ class SavingsViewModel : ViewModel() {
             }
         }
     }
+    fun eliminarMeta(id: String) {
+        _savingsState.value = SavingsState.Loading
+        viewModelScope.launch {
+            try {
+                repository.eliminarMeta(id)
+                _savingsState.value = SavingsState.Eliminado
+            } catch (e: Exception) {
+                _savingsState.value = SavingsState.Error(e.mensajeAmigable())
+            }
+        }
+    }
 }
