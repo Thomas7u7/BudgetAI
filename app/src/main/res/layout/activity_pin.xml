@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="←"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/tvTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Seguridad de ahorro"
+            android:textColor="@color/text_primary"
+            android:textSize="19sp"
+            android:fontFamily="@font/outfit_bold"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/ivCandado"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@android:drawable/ic_lock_idle_lock"
+            app:tint="@color/green_primary"/>
+
+        <TextView
+            android:id="@+id/tvSubtitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Configura tu PIN de seguridad"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:fontFamily="@font/geist_semibold"/>
+
+        <TextView
+            android:id="@+id/tvDescripcion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="Crea tu código obligatorio de acceso de 4 dígitos para autorizar el ingreso y retiro de fondos."
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:paddingHorizontal="20dp"
+            android:fontFamily="@font/geist_regular"/>
+
+        <!-- Indicadores de dígitos -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="28dp">
+
+            <View android:id="@+id/dot1" android:layout_width="14dp" android:layout_height="14dp" android:layout_margin="6dp" android:background="@drawable/bg_pin_dot"/>
+            <View android:id="@+id/dot2" android:layout_width="14dp" android:layout_height="14dp" android:layout_margin="6dp" android:background="@drawable/bg_pin_dot"/>
+            <View android:id="@+id/dot3" android:layout_width="14dp" android:layout_height="14dp" android:layout_margin="6dp" android:background="@drawable/bg_pin_dot"/>
+            <View android:id="@+id/dot4" android:layout_width="14dp" android:layout_height="14dp" android:layout_margin="6dp" android:background="@drawable/bg_pin_dot"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/error_red"
+            android:textSize="13sp"
+            android:visibility="gone"
+            android:fontFamily="@font/geist_semibold"/>
+
+    </LinearLayout>
+
+    <!-- Teclado numérico -->
+    <androidx.gridlayout.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:columnCount="3"
+        app:rowCount="4">
+
+        <TextView android:id="@+id/key1" style="@style/PinKeyStyle" android:text="1"/>
+        <TextView android:id="@+id/key2" style="@style/PinKeyStyle" android:text="2"/>
+        <TextView android:id="@+id/key3" style="@style/PinKeyStyle" android:text="3"/>
+        <TextView android:id="@+id/key4" style="@style/PinKeyStyle" android:text="4"/>
+        <TextView android:id="@+id/key5" style="@style/PinKeyStyle" android:text="5"/>
+        <TextView android:id="@+id/key6" style="@style/PinKeyStyle" android:text="6"/>
+        <TextView android:id="@+id/key7" style="@style/PinKeyStyle" android:text="7"/>
+        <TextView android:id="@+id/key8" style="@style/PinKeyStyle" android:text="8"/>
+        <TextView android:id="@+id/key9" style="@style/PinKeyStyle" android:text="9"/>
+        <TextView android:id="@+id/keyX" style="@style/PinKeyStyle" android:text="✕"/>
+        <TextView android:id="@+id/key0" style="@style/PinKeyStyle" android:text="0"/>
+        <TextView android:id="@+id/keyOK" style="@style/PinKeyStyle" android:text="OK" android:textColor="@color/green_primary"/>
+
+    </androidx.gridlayout.widget.GridLayout>
+
+</LinearLayout>

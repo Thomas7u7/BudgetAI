@@ -14,4 +14,5 @@ sealed class SavingsState {
     object DepositoExitoso : SavingsState()
     object RetiroExitoso : SavingsState()
     data class Error(val mensaje: String) : SavingsState()
+    object Eliminado : SavingsState()
 }

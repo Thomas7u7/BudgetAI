@@ -46,6 +46,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.9.3")
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
