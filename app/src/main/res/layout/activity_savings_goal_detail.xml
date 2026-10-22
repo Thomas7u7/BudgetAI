@@ -1,6 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_dark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/btnBack"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:gravity="center"
+                    android:text="←"
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/tvTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text=""
+                    android:textColor="@color/text_primary"
+                    android:textSize="19sp"
+                    android:fontFamily="@font/outfit_bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_field"
+                android:padding="18dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Progreso de tu meta"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/geist_semibold"/>
+
+                <TextView
+                    android:id="@+id/tvPorcentaje"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="0%"
+                    android:textColor="@color/green_primary"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/outfit_bold"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="8dp"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressTint="@color/green_primary"
+                    android:progressBackgroundTint="@color/field_border"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/field_border"
+                    android:layout_marginVertical="14dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="4dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Dinero ahorrado" android:textColor="@color/text_secondary" android:textSize="13sp" android:fontFamily="@font/geist_regular"/>
+                    <TextView android:id="@+id/tvAhorrado" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="$0 COP" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Objetivo" android:textColor="@color/text_secondary" android:textSize="13sp" android:fontFamily="@font/geist_regular"/>
+                    <TextView android:id="@+id/tvObjetivo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="$0 COP" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Dinero faltante" android:textColor="@color/text_secondary" android:textSize="13sp" android:fontFamily="@font/geist_regular"/>
+                    <TextView android:id="@+id/tvFaltante" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="$0 COP" android:textColor="@color/error_red" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Fecha objetivo" android:textColor="@color/text_secondary" android:textSize="13sp" android:fontFamily="@font/geist_regular"/>
+                    <TextView android:id="@+id/tvFecha" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Ahorro recomendado" android:textColor="@color/text_secondary" android:textSize="13sp" android:fontFamily="@font/geist_regular"/>
+                    <TextView android:id="@+id/tvRecomendado" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="$0 COP" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Estado si no ha agregado dinero -->
+            <LinearLayout
+                android:id="@+id/cardSinDinero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_field"
+                android:padding="20dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="💰"
+                    android:textSize="20sp"
+                    android:background="@drawable/bg_circle_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="¡Comienza tu ahorro hoy!"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/geist_semibold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="Aún no has agregado dinero a esta meta. Haz tu primer depósito para ver tu progreso."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/geist_regular"/>
+            </LinearLayout>
+
+            <!-- Botones de acción -->
+            <TextView
+                android:id="@+id/btnAgregarDinero"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center"
+                android:background="@drawable/bg_button_primary"
+                android:text="Agregar dinero"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/geist_bold"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/btnEditarMeta"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center"
+                android:background="@drawable/bg_field"
+                android:text="Editar meta"
+                android:textColor="@color/text_primary"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/geist_semibold"
+                android:textSize="15sp"/>
+
+            <!-- Botón de eliminar (parte Delete) -->
+            <TextView
+                android:id="@+id/btnEliminarMeta"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center"
+                android:background="@drawable/bg_field"
+                android:text="🗑 Eliminar meta"
+                android:textColor="@color/error_red"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/geist_semibold"
+                android:textSize="15sp"/>
+
+            <include layout="@layout/layout_status_banner"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#CC0A0E1A"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="@color/green_primary"/>
+    </LinearLayout>
+
+</FrameLayout>
