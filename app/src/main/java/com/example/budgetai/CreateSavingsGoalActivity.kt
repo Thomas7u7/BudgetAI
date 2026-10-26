@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.budgetai.data.model.SavingsGoal
 import com.example.budgetai.data.model.SavingsState
 import com.example.budgetai.ui.savings.SavingsViewModel
 import com.example.budgetai.util.TipoBanner
@@ -25,6 +26,7 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
 
     private val viewModel: SavingsViewModel by viewModels()
 
+    private lateinit var tvTituloPantalla: TextView
     private lateinit var etNombre: EditText
     private lateinit var etMontoObjetivo: EditText
     private lateinit var tvFechaLimite: TextView
@@ -39,15 +41,19 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
 
     private var frecuenciaSeleccionada = "Semanal"
     private val calendarioSeleccionado = Calendar.getInstance().apply {
-        add(Calendar.MONTH, 6) // fecha límite por defecto: 6 meses adelante
+        add(Calendar.MONTH, 6)
     }
     private val formatoFechaVisual = SimpleDateFormat("dd MMM yyyy", Locale("es", "CO"))
     private val formatoMoneda = NumberFormat.getInstance(Locale("es", "CO"))
+
+    private var goalIdEditar: String? = null
+    private var montoAhorradoActual = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_savings_goal)
 
+        tvTituloPantalla = findViewById(R.id.tvTituloPantalla)
         etNombre = findViewById(R.id.etNombre)
         etMontoObjetivo = findViewById(R.id.etMontoObjetivo)
         tvFechaLimite = findViewById(R.id.tvFechaLimite)
@@ -62,6 +68,12 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.btnBack).setOnClickListener { finish() }
 
+        goalIdEditar = intent.getStringExtra("goalId")
+        if (goalIdEditar != null) {
+            tvTituloPantalla.text = "Editar meta"
+            btnCrear.text = "Guardar cambios"
+        }
+
         tvFechaLimite.text = formatoFechaVisual.format(calendarioSeleccionado.time)
         tvFechaLimite.setOnClickListener { mostrarSelectorFecha() }
 
@@ -71,10 +83,14 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
 
         etMontoObjetivo.addTextChangedListener(simpleWatcher { actualizarPlanRecomendado() })
 
-        btnCrear.setOnClickListener { crearMeta() }
+        btnCrear.setOnClickListener { guardar() }
 
         actualizarPlanRecomendado()
         observarEstado()
+
+        if (goalIdEditar != null) {
+            viewModel.cargarMeta(goalIdEditar!!)
+        }
     }
 
     private fun seleccionarFrecuencia(frecuencia: String) {
@@ -102,7 +118,6 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
         ).show()
     }
 
-    /** Recalcula en vivo cuánto habría que ahorrar por periodo, según el monto y la fecha elegidos. */
     private fun actualizarPlanRecomendado() {
         val monto = etMontoObjetivo.text.toString().toDoubleOrNull() ?: 0.0
         val milisRestantes = calendarioSeleccionado.timeInMillis - System.currentTimeMillis()
@@ -114,7 +129,8 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
             else -> (diasRestantes / 30).coerceAtLeast(1)
         }
 
-        val montoPorPeriodo = if (monto > 0) monto / periodos else 0.0
+        val montoFaltante = (monto - montoAhorradoActual).coerceAtLeast(0.0)
+        val montoPorPeriodo = if (montoFaltante > 0) montoFaltante / periodos else 0.0
         val etiquetaPeriodo = when (frecuenciaSeleccionada) {
             "Semanal" -> "semana"
             "Quincenal" -> "quincena"
@@ -125,13 +141,17 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
         tvPlanDetalle.text = "Monto calculado para $periodos ${if (etiquetaPeriodo == "mes") "meses" else "${etiquetaPeriodo}s"} restantes"
     }
 
-    private fun crearMeta() {
+    private fun guardar() {
         statusBanner.ocultarBanner()
         val nombre = etNombre.text.toString().trim()
         val monto = etMontoObjetivo.text.toString().toDoubleOrNull() ?: 0.0
         val fecha = Timestamp(calendarioSeleccionado.time)
 
-        viewModel.crearMeta(nombre, monto, fecha, frecuenciaSeleccionada)
+        if (goalIdEditar != null) {
+            viewModel.actualizarMeta(goalIdEditar!!, nombre, monto, montoAhorradoActual, fecha, frecuenciaSeleccionada)
+        } else {
+            viewModel.crearMeta(nombre, monto, fecha, frecuenciaSeleccionada)
+        }
     }
 
     private fun observarEstado() {
@@ -141,9 +161,15 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
                     loadingOverlay.visibility = View.VISIBLE
                 }
 
+                is SavingsState.DetalleCargado -> {
+                    loadingOverlay.visibility = View.GONE
+                    precargarMeta(estado.meta)
+                }
+
                 is SavingsState.GuardadoExitoso -> {
                     loadingOverlay.visibility = View.GONE
-                    statusBanner.mostrarBanner("¡Meta creada exitosamente!", TipoBanner.EXITO)
+                    val mensaje = if (goalIdEditar != null) "¡Meta actualizada exitosamente!" else "¡Meta creada exitosamente!"
+                    statusBanner.mostrarBanner(mensaje, TipoBanner.EXITO)
                     btnCrear.postDelayed({
                         val intent = Intent(this, SavingsHomeActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -160,6 +186,15 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
                 else -> Unit
             }
         }
+    }
+
+    private fun precargarMeta(meta: SavingsGoal) {
+        etNombre.setText(meta.nombre)
+        etMontoObjetivo.setText(meta.montoObjetivo.toInt().toString())
+        montoAhorradoActual = meta.montoAhorrado
+        calendarioSeleccionado.time = meta.fechaLimite.toDate()
+        tvFechaLimite.text = formatoFechaVisual.format(calendarioSeleccionado.time)
+        seleccionarFrecuencia(meta.frecuencia)
     }
 
     private fun simpleWatcher(onChanged: () -> Unit) = object : android.text.TextWatcher {

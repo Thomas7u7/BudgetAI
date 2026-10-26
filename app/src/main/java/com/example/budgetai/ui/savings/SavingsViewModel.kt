@@ -93,6 +93,57 @@ class SavingsViewModel : ViewModel() {
         }
     }
 
+    fun actualizarMeta(id: String, nombre: String, montoObjetivo: Double, montoAhorrado: Double, fechaLimite: Timestamp, frecuencia: String) {
+        if (nombre.isBlank()) {
+            _savingsState.value = SavingsState.Error("Ponle un nombre a tu meta")
+            return
+        }
+        if (montoObjetivo <= 0) {
+            _savingsState.value = SavingsState.Error("El monto objetivo debe ser mayor a cero")
+            return
+        }
+        if (montoObjetivo < montoAhorrado) {
+            _savingsState.value = SavingsState.Error("El objetivo no puede ser menor a lo que ya ahorraste ($${montoAhorrado.toInt()})")
+            return
+        }
+
+        val semanasRestantes = calcularSemanasRestantes(fechaLimite)
+        val montoRecomendado = if (semanasRestantes > 0) (montoObjetivo - montoAhorrado) / semanasRestantes else montoObjetivo
+
+        val meta = SavingsGoal(
+            id = id,
+            nombre = nombre,
+            montoObjetivo = montoObjetivo,
+            montoAhorrado = montoAhorrado,
+            fechaLimite = fechaLimite,
+            frecuencia = frecuencia,
+            montoRecomendado = montoRecomendado,
+            completada = montoAhorrado >= montoObjetivo
+        )
+
+        _savingsState.value = SavingsState.Loading
+        viewModelScope.launch {
+            try {
+                repository.actualizarMeta(id, meta)
+                _savingsState.value = SavingsState.GuardadoExitoso
+            } catch (e: Exception) {
+                _savingsState.value = SavingsState.Error(e.mensajeAmigable())
+            }
+        }
+    }
+
+    fun marcarComoActiva(id: String) {
+        _savingsState.value = SavingsState.Loading
+        viewModelScope.launch {
+            try {
+                repository.marcarComoActiva(id)
+                _savingsState.value = SavingsState.GuardadoExitoso
+            } catch (e: Exception) {
+                _savingsState.value = SavingsState.Error(e.mensajeAmigable())
+            }
+        }
+    }
+
     private fun calcularSemanasRestantes(fechaLimite: Timestamp): Int {
         val milisRestantes = fechaLimite.toDate().time - System.currentTimeMillis()
         val semanas = milisRestantes / (1000L * 60 * 60 * 24 * 7)

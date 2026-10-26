@@ -68,7 +68,9 @@ class SavingsGoalDetailActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.btnEditarMeta).setOnClickListener {
-            Toast.makeText(this, "Editar meta (próximamente)", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, CreateSavingsGoalActivity::class.java)
+            intent.putExtra("goalId", goalId)
+            startActivity(intent)
         }
 
         // --- Parte DELETE ---
