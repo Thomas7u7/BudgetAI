@@ -50,5 +50,10 @@
         <activity android:name=".DepositSavingsActivity" android:exported="false"/>
         <activity android:name=".SavingsHistoryActivity" android:exported="false"/>
         <activity android:name=".SavingsAIActivity" android:exported="false"/>
+        <activity android:name=".SavingsHomeActivity" android:exported="false"/>
+        <activity android:name=".CreateSavingsGoalActivity" android:exported="false" android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".SavingsGoalDetailActivity" android:exported="false"/>
+        <activity android:name=".SavingsGoalsListActivity" android:exported="false"/>
+        <activity android:name=".PinActivity" android:exported="false"/>
     </application>
 </manifest>

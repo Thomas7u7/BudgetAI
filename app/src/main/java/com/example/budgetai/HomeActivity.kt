@@ -26,12 +26,10 @@ class HomeActivity : AppCompatActivity() {
 
         val botonesProximamente = listOf(
             R.id.btnEnviar to "Enviar",
-            R.id.btnMeta to "Meta",
             R.id.btnQR to "Código QR",
             R.id.btnDisponible to "Disponible",
             R.id.btnAlertas to "Alertas",
-            R.id.btnGastos to "Gastos",
-            R.id.btnAhorro to "Ahorro"
+            R.id.btnGastos to "Gastos"
         )
 
         botonesProximamente.forEach { (id, nombre) ->
@@ -42,7 +40,12 @@ class HomeActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.btnMovimientos).setOnClickListener {
             startActivity(Intent(this, MovementsActivity::class.java))
         }
-
+        findViewById<LinearLayout>(R.id.btnAhorro).setOnClickListener {
+            startActivity(Intent(this, SavingsHomeActivity::class.java))
+        }
+        findViewById<LinearLayout>(R.id.btnMeta).setOnClickListener {
+            startActivity(Intent(this, SavingsGoalsListActivity::class.java))
+        }
         findViewById<ImageView>(R.id.ivAvatarHome).setOnClickListener {
             startActivity(Intent(this, MyProfileActivity::class.java))
         }
