@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="←"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"/>
+
+        <FrameLayout
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_button_primary">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_sparkle"/>
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="BudgetIA: tu consultor"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:fontFamily="@font/outfit_bold"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingHorizontal="20dp"
+        android:clipToPadding="false"/>
+
+    <!-- Sugerencias rápidas -->
+    <LinearLayout
+        android:id="@+id/layoutSugerencias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/btnSugerencia1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_field"
+            android:padding="10dp"
+            android:text="¿Cómo voy con mi meta?"
+            android:textColor="@color/text_primary"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:layout_marginEnd="6dp"
+            android:fontFamily="@font/geist_regular"/>
+
+        <TextView
+            android:id="@+id/btnSugerencia2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_field"
+            android:padding="10dp"
+            android:text="¿Cuánto me falta?"
+            android:textColor="@color/text_primary"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:layout_marginStart="6dp"
+            android:fontFamily="@font/geist_regular"/>
+    </LinearLayout>
+
+    <!-- Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/etMensaje"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_field"
+            android:hint="Pregúntale a BudgetIA..."
+            android:textColorHint="@color/text_secondary"
+            android:textColor="@color/text_primary"
+            android:padding="14dp"
+            android:fontFamily="@font/geist_regular"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/btnEnviar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:background="@drawable/bg_button_primary"
+            android:text="➤"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <include layout="@layout/layout_savings_bottom_nav"/>
+
+</LinearLayout>

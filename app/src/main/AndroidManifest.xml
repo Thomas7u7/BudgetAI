@@ -48,5 +48,7 @@
         <activity android:name=".WithdrawSavingsActivity" android:exported="false"/>
         <activity android:name=".OperationResultActivity" android:exported="false"/>
         <activity android:name=".DepositSavingsActivity" android:exported="false"/>
+        <activity android:name=".SavingsHistoryActivity" android:exported="false"/>
+        <activity android:name=".SavingsAIActivity" android:exported="false"/>
     </application>
 </manifest>
