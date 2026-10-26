@@ -44,5 +44,9 @@
         <activity android:name=".MovementsActivity" android:exported="false"/>
         <activity android:name=".RegisterMovementActivity" android:exported="false"/>
         <activity android:name=".MovementDetailActivity" android:exported="false"/>
+        <activity android:name=".PinSuccessActivity" android:exported="false"/>
+        <activity android:name=".WithdrawSavingsActivity" android:exported="false"/>
+        <activity android:name=".OperationResultActivity" android:exported="false"/>
+        <activity android:name=".DepositSavingsActivity" android:exported="false"/>
     </application>
 </manifest>

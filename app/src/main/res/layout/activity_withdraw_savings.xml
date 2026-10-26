@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:text="←"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Retirar ahorro"
+                android:textColor="@color/text_primary"
+                android:textSize="19sp"
+                android:fontFamily="@font/outfit_bold"/>
+        </LinearLayout>
+
+        <!-- Origen -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="ORIGEN DE RETIRO"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:fontFamily="@font/outfit_semibold"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_field"
+            android:padding="14dp"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_m3_flag"
+                app:tint="@color/green_primary"/>
+
+            <TextView
+                android:id="@+id/tvNombreMeta"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text=""
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:fontFamily="@font/geist_semibold"/>
+
+            <TextView
+                android:id="@+id/tvDisponible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Disponible: $0"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:fontFamily="@font/geist_regular"/>
+        </LinearLayout>
+
+        <!-- Monto -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:gravity="center"
+            android:text="MONTO A RETIRAR"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:fontFamily="@font/outfit_semibold"/>
+
+        <EditText
+            android:id="@+id/etMonto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:hint="$0"
+            android:textColorHint="@color/text_secondary"
+            android:textColor="@color/text_primary"
+            android:fontFamily="@font/outfit_bold"
+            android:inputType="number"
+            android:textSize="36sp"
+            android:singleLine="true"/>
+
+        <!-- Montos rápidos -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView android:id="@+id/btnMonto100" android:layout_width="0dp" android:layout_weight="1" android:layout_height="40dp" android:gravity="center" android:background="@drawable/bg_field" android:text="+$100" android:textColor="@color/text_primary" android:layout_marginEnd="6dp" android:fontFamily="@font/geist_semibold" android:textSize="13sp"/>
+            <TextView android:id="@+id/btnMonto200" android:layout_width="0dp" android:layout_weight="1" android:layout_height="40dp" android:gravity="center" android:background="@drawable/bg_field" android:text="+$200" android:textColor="@color/text_primary" android:layout_marginHorizontal="4dp" android:fontFamily="@font/geist_semibold" android:textSize="13sp"/>
+            <TextView android:id="@+id/btnMonto500" android:layout_width="0dp" android:layout_weight="1" android:layout_height="40dp" android:gravity="center" android:background="@drawable/bg_field" android:text="+$500" android:textColor="@color/text_primary" android:layout_marginHorizontal="4dp" android:fontFamily="@font/geist_semibold" android:textSize="13sp"/>
+            <TextView android:id="@+id/btnMonto1000" android:layout_width="0dp" android:layout_weight="1" android:layout_height="40dp" android:gravity="center" android:background="@drawable/bg_field" android:text="+$1.000" android:textColor="@color/text_primary" android:layout_marginStart="6dp" android:fontFamily="@font/geist_semibold" android:textSize="13sp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvValidacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/error_red"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:fontFamily="@font/geist_semibold"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/btnContinuar"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:gravity="center"
+            android:background="@drawable/bg_button_primary"
+            android:text="Continuar seguro"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:fontFamily="@font/geist_bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/btnCancelar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="Cancelar"
+            android:textColor="@color/text_secondary"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/geist_semibold"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

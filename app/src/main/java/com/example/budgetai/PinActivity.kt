@@ -22,6 +22,7 @@ class PinActivity : AppCompatActivity() {
 
     private var modo = "configurar" // "configurar" | "depositar" | "retirar"
     private var goalId: String = ""
+    private var operacionPendiente: String = ""
     private var monto: Double = 0.0
     private var pinIngresado = StringBuilder()
     private var primerPinConfiguracion: String? = null // para pedir "confirma tu PIN" en modo configurar
@@ -44,6 +45,7 @@ class PinActivity : AppCompatActivity() {
         modo = intent.getStringExtra("modo") ?: "configurar"
         goalId = intent.getStringExtra("goalId") ?: ""
         monto = intent.getDoubleExtra("monto", 0.0)
+        operacionPendiente = intent.getStringExtra("operacionPendiente") ?: ""
 
         configurarTextosSegunModo()
         configurarTeclado()
@@ -150,10 +152,14 @@ class PinActivity : AppCompatActivity() {
         viewModel.savingsState.observe(this) { estado ->
             when (estado) {
                 is SavingsState.PinConfigurado -> {
-                    val intent = Intent(this, PinSuccessActivity::class.java)
-                    intent.putExtra("tipo", "pin_creado")
-                    startActivity(intent)
-                    finish()
+                    if (goalId.isNotEmpty() && monto > 0) {
+                        continuarSegunModo()
+                    } else {
+                        val intent = Intent(this, PinSuccessActivity::class.java)
+                        intent.putExtra("tipo", "pin_creado")
+                        startActivity(intent)
+                        finish()
+                    }
                 }
 
                 is SavingsState.PinValido -> {
@@ -184,7 +190,8 @@ class PinActivity : AppCompatActivity() {
     }
 
     private fun continuarSegunModo() {
-        when (modo) {
+        val accion = if (operacionPendiente.isNotEmpty()) operacionPendiente else modo
+        when (accion) {
             "depositar" -> {
                 viewModel.depositar(goalId, monto)
                 observarResultadoOperacion("deposito")
