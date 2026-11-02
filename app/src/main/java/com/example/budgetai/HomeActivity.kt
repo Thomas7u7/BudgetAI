@@ -44,7 +44,7 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, SavingsHomeActivity::class.java))
         }
         findViewById<LinearLayout>(R.id.btnMeta).setOnClickListener {
-            startActivity(Intent(this, SavingsGoalsListActivity::class.java))
+            startActivity(Intent(this, GoalsListActivity::class.java))
         }
         findViewById<ImageView>(R.id.ivAvatarHome).setOnClickListener {
             startActivity(Intent(this, MyProfileActivity::class.java))

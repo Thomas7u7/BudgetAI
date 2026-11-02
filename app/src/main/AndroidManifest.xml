@@ -60,5 +60,6 @@
         <activity android:name=".GoalAnalysisActivity" android:exported="false"/>
         <activity android:name=".AddGoalMoneyActivity" android:exported="false"/>
         <activity android:name=".GoalsListActivity" android:exported="false"/>
+        <activity android:name=".GoalDetailActivity" android:exported="false"/>
     </application>
 </manifest>

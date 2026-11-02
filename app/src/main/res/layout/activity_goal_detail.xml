@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_dark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:text="←"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/tvTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:fontFamily="@font/outfit_bold"/>
+
+            <!-- Felicitación (solo al 100%) -->
+            <LinearLayout
+                android:id="@+id/cardFelicidades"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_saldo"
+                android:padding="16dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎉 ¡Felicidades! Has alcanzado tu objetivo"
+                    android:textColor="@color/green_primary"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/outfit_bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_field"
+                android:padding="16dp"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Progreso de tu meta"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tvPorcentaje"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/green_primary"
+                    android:textSize="26sp"
+                    android:fontFamily="@font/outfit_bold"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="6dp"
+                    android:max="100"
+                    android:progressTint="@color/green_primary"
+                    android:progressBackgroundTint="@color/field_border"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="14dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Dinero ahorrado" android:textColor="@color/text_secondary" android:textSize="13sp"/>
+                    <TextView android:id="@+id/tvAhorrado" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Objetivo" android:textColor="@color/text_secondary" android:textSize="13sp"/>
+                    <TextView android:id="@+id/tvObjetivo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Dinero restante" android:textColor="@color/text_secondary" android:textSize="13sp"/>
+                    <TextView android:id="@+id/tvRestante" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Fecha objetivo" android:textColor="@color/text_secondary" android:textSize="13sp"/>
+                    <TextView android:id="@+id/tvFecha" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/filaMensual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Ahorro mensual recomendado" android:textColor="@color/text_secondary" android:textSize="13sp"/>
+                    <TextView android:id="@+id/tvMensual" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/text_primary" android:textSize="13sp" android:fontFamily="@font/geist_semibold"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnAgregarDinero"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:background="@drawable/bg_button_primary"
+                android:text="Agregar dinero"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:fontFamily="@font/geist_bold"
+                android:textSize="16sp"/>
+
+            <!-- Solo al 100%. La acción se conecta en la Fase E (Delete) -->
+            <TextView
+                android:id="@+id/btnRetirarMeta"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:background="@drawable/bg_button_primary"
+                android:text="Retirar meta"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:fontFamily="@font/geist_bold"
+                android:textSize="16sp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/btnCrearNueva"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:background="@drawable/bg_field"
+                android:text="Crear nueva meta"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/geist_semibold"
+                android:textSize="15sp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/btnSalir"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:background="@drawable/bg_field"
+                android:text="Salir"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/geist_semibold"
+                android:textSize="15sp"/>
+
+            <!-- Consejo de BudgetAI -->
+            <LinearLayout
+                android:id="@+id/cardConsejo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_field"
+                android:padding="16dp"
+                android:layout_marginTop="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💡 Consejo de BudgetAI"
+                    android:textColor="@color/green_primary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/geist_semibold"/>
+                <TextView
+                    android:id="@+id/tvConsejo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/geist_regular"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="#CC0A0E1A"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="@color/green_primary"/>
+    </LinearLayout>
+</FrameLayout>

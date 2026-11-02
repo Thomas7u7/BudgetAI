@@ -56,8 +56,10 @@ class AddGoalMoneyActivity : AppCompatActivity() {
         viewModel.goalState.observe(this) { estado ->
             when (estado) {
                 is GoalState.Loading -> loadingOverlay.visibility = View.VISIBLE
-                is GoalState.DetalleCargado ->
+                is GoalState.DetalleCargado -> {
+                    loadingOverlay.visibility = View.GONE
                     findViewById<TextView>(R.id.tvNombreMeta).text = estado.meta.nombre
+                }
                 is GoalState.DineroAgregado -> {
                     Toast.makeText(this, "Dinero agregado a tu meta", Toast.LENGTH_SHORT).show()
                     finish()
