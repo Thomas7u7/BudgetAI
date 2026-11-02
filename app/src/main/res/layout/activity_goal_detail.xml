@@ -178,6 +178,18 @@
                 android:fontFamily="@font/geist_semibold"
                 android:textSize="15sp"/>
 
+            <TextView
+                android:id="@+id/btnEliminarMeta"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:background="@drawable/bg_field"
+                android:text="Eliminar meta"
+                android:textColor="@color/error_red"
+                android:fontFamily="@font/geist_semibold"
+                android:textSize="15sp"/>
+
             <!-- Consejo de BudgetAI -->
             <LinearLayout
                 android:id="@+id/cardConsejo"

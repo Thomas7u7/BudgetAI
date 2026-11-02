@@ -15,6 +15,7 @@ import com.example.budgetai.ui.goals.GoalViewModel
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.appcompat.app.AlertDialog
 
 class GoalDetailActivity : AppCompatActivity() {
 
@@ -24,6 +25,7 @@ class GoalDetailActivity : AppCompatActivity() {
 
     private lateinit var loadingOverlay: LinearLayout
     private var goalId = ""
+    private var saliendo = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +47,21 @@ class GoalDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.btnModificarMeta).setOnClickListener {
             startActivity(Intent(this, CreateGoalActivity::class.java).putExtra("goalId", goalId))
         }
+        findViewById<TextView>(R.id.btnRetirarMeta).setOnClickListener {
+            confirmar(
+                titulo = "¿Retirar esta meta?",
+                mensaje = "Tu meta ya está completa. Al retirarla desaparecerá de tu lista y el dinero ahorrado volverá a tu saldo disponible.",
+                textoBoton = "Retirar"
+            ) { viewModel.retirarMeta(goalId) }
+        }
+
+        findViewById<TextView>(R.id.btnEliminarMeta).setOnClickListener {
+            confirmar(
+                titulo = "¿Eliminar esta meta?",
+                mensaje = "Esta acción no se puede deshacer. Se eliminará \"${findViewById<TextView>(R.id.tvTitulo).text}\" y el dinero ahorrado volverá a tu saldo disponible.",
+                textoBoton = "Eliminar"
+            ) { viewModel.eliminarMeta(goalId) }
+        }
 
         viewModel.goalState.observe(this) { estado ->
             when (estado) {
@@ -52,6 +69,15 @@ class GoalDetailActivity : AppCompatActivity() {
                 is GoalState.DetalleCargado -> {
                     loadingOverlay.visibility = View.GONE
                     mostrarMeta(estado.meta)
+                }
+                is GoalState.MetaRetirada -> {
+                    Toast.makeText(this, "Meta retirada. Tu dinero volvió al saldo disponible", Toast.LENGTH_LONG).show()
+                    volverALista()
+                }
+
+                is GoalState.Eliminado -> {
+                    Toast.makeText(this, "Meta eliminada", Toast.LENGTH_SHORT).show()
+                    volverALista()
                 }
                 is GoalState.Error -> {
                     loadingOverlay.visibility = View.GONE
@@ -64,7 +90,7 @@ class GoalDetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.cargarMeta(goalId)
+        if (!saliendo) viewModel.cargarMeta(goalId)
     }
 
     private fun mostrarMeta(meta: Goal) {
@@ -102,5 +128,25 @@ class GoalDetailActivity : AppCompatActivity() {
             else ->
                 "Programa tu ahorro justo después de recibir tus ingresos. Así avanzas primero hacia tu meta, sin depender de lo que sobre al final del mes."
         }
+    }
+    /** Diálogo de confirmación; la bandera `saliendo` solo se activa si el usuario confirma. */
+    private fun confirmar(titulo: String, mensaje: String, textoBoton: String, accion: () -> Unit) {
+        AlertDialog.Builder(this)
+            .setTitle(titulo)
+            .setMessage(mensaje)
+            .setPositiveButton(textoBoton) { _, _ ->
+                saliendo = true
+                accion()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun volverALista() {
+        startActivity(
+            Intent(this, GoalsListActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        )
+        finish()
     }
 }

@@ -142,6 +142,35 @@ class GoalViewModel : ViewModel() {
             }
         }
     }
+    // ---------- DELETE ----------
+
+    /** Eliminación lógica: la meta deja de verse y su dinero vuelve al saldo. */
+    fun retirarMeta(id: String) {
+        if (ocupado()) return
+        _goalState.value = GoalState.Loading
+        viewModelScope.launch {
+            try {
+                repository.retirarMeta(id)
+                _goalState.value = GoalState.MetaRetirada
+            } catch (e: Exception) {
+                _goalState.value = GoalState.Error(e.mensajeAmigable())
+            }
+        }
+    }
+
+    /** Eliminación real del documento en Firestore. */
+    fun eliminarMeta(id: String) {
+        if (ocupado()) return
+        _goalState.value = GoalState.Loading
+        viewModelScope.launch {
+            try {
+                repository.eliminarMeta(id)
+                _goalState.value = GoalState.Eliminado
+            } catch (e: Exception) {
+                _goalState.value = GoalState.Error(e.mensajeAmigable())
+            }
+        }
+    }
 
     // ---------- Helpers ----------
 
