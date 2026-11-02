@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_dark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/btnBack"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:gravity="center"
+                    android:text="←"
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/tvTituloPantalla"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Crear nueva meta"
+                    android:textColor="@color/text_primary"
+                    android:textSize="19sp"
+                    android:fontFamily="@font/outfit_bold"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Define un objetivo y BudgetAI te ayudará a alcanzarlo."
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:fontFamily="@font/geist_regular"/>
+
+            <!-- Nombre -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="NOMBRE DEL AHORRO"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <EditText
+                android:id="@+id/etNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:hint="Ej: Viaje a Cartagena"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/outfit_regular"
+                android:singleLine="true"/>
+
+            <TextView
+                android:id="@+id/errNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/error_red"
+                android:textSize="12sp"
+                android:visibility="gone"
+                android:fontFamily="@font/geist_regular"/>
+
+            <!-- Categoría -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="CATEGORÍA"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <TextView
+                android:id="@+id/tvCategoria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:text=""
+                android:hint="Seleccionar"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/outfit_regular"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/errCategoria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/error_red"
+                android:textSize="12sp"
+                android:visibility="gone"
+                android:fontFamily="@font/geist_regular"/>
+
+            <!-- Monto objetivo -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="MONTO OBJETIVO"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <EditText
+                android:id="@+id/etMonto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:hint="$ 0"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/outfit_regular"
+                android:inputType="number"
+                android:singleLine="true"/>
+
+            <TextView
+                android:id="@+id/errMonto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/error_red"
+                android:textSize="12sp"
+                android:visibility="gone"
+                android:fontFamily="@font/geist_regular"/>
+
+            <!-- Ahorro inicial -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="AHORRO INICIAL"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <EditText
+                android:id="@+id/etAhorroInicial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:hint="$ 0"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/outfit_regular"
+                android:inputType="number"
+                android:singleLine="true"/>
+
+            <TextView
+                android:id="@+id/errAhorroInicial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/error_red"
+                android:textSize="12sp"
+                android:visibility="gone"
+                android:fontFamily="@font/geist_regular"/>
+
+            <!-- Fecha objetivo -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="FECHA OBJETIVO"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/outfit_semibold"/>
+
+            <TextView
+                android:id="@+id/tvFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_field"
+                android:drawableStart="@drawable/ic_m3_calendar"
+                android:drawableTint="@color/text_secondary"
+                android:drawablePadding="10dp"
+                android:text=""
+                android:hint="Seleccionar fecha"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/outfit_regular"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/errFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/error_red"
+                android:textSize="12sp"
+                android:visibility="gone"
+                android:fontFamily="@font/geist_regular"/>
+
+            <TextView
+                android:id="@+id/btnContinuar"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:background="@drawable/bg_button_primary"
+                android:text="Continuar"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:fontFamily="@font/geist_bold"
+                android:textSize="16sp"/>
+
+            <include layout="@layout/layout_status_banner"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#F20A0E1A"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:indeterminateTint="@color/green_primary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="BudgetAI está analizando tu objetivo..."
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:fontFamily="@font/outfit_bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Calculando un plan realista según tu monto, plazo y ahorro inicial."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:fontFamily="@font/geist_regular"/>
+    </LinearLayout>
+
+</FrameLayout>

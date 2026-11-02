@@ -55,5 +55,10 @@
         <activity android:name=".SavingsGoalDetailActivity" android:exported="false"/>
         <activity android:name=".SavingsGoalsListActivity" android:exported="false"/>
         <activity android:name=".PinActivity" android:exported="false"/>
+        <activity android:name=".CreateGoalActivity" android:exported="false"/>
+        <activity android:name=".SelectCategoryActivity" android:exported="false"/>
+        <activity android:name=".GoalAnalysisActivity" android:exported="false"/>
+        <activity android:name=".AddGoalMoneyActivity" android:exported="false"/>
+        <activity android:name=".GoalsListActivity" android:exported="false"/>
     </application>
 </manifest>
