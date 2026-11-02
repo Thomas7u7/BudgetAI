@@ -54,4 +54,19 @@
         <item>Otro gasto</item>
     </string-array>
 
+    <string-array name="categorias_meta">
+        <item>Viajes</item>
+        <item>Tecnología</item>
+        <item>Hogar</item>
+        <item>Vehículo</item>
+        <item>Educación</item>
+        <item>Salud</item>
+        <item>Emergencia</item>
+        <item>Eventos</item>
+        <item>Compras personales</item>
+        <item>Mascotas</item>
+        <item>Inversión</item>
+        <item>Ahorro libre</item>
+        <item>Personalizado</item>
+    </string-array>
 </resources>

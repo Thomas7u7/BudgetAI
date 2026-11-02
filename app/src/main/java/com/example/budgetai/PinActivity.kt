@@ -21,6 +21,7 @@ class PinActivity : AppCompatActivity() {
     private lateinit var dots: List<View>
 
     private var modo = "configurar" // "configurar" | "depositar" | "retirar"
+    private var procesando = false
     private var goalId: String = ""
     private var operacionPendiente: String = ""
     private var monto: Double = 0.0
@@ -113,9 +114,11 @@ class PinActivity : AppCompatActivity() {
     }
 
     private fun confirmarPin() {
+        if (procesando) return
         val pin = pinIngresado.toString()
         if (pin.length != 4) return
 
+        procesando = true
         when (modo) {
             "configurar" -> manejarConfiguracion(pin)
             else -> viewModel.verificarPin(pin)
@@ -129,6 +132,7 @@ class PinActivity : AppCompatActivity() {
             pinIngresado.clear()
             actualizarDots()
             tvDescripcion.text = "Confirma tu código de 4 dígitos para continuar."
+            procesando = false
         } else {
             // Segunda vez: compara con el primero
             if (pin == primerPinConfiguracion) {
@@ -139,6 +143,7 @@ class PinActivity : AppCompatActivity() {
                 pinIngresado.clear()
                 actualizarDots()
                 tvDescripcion.text = "Crea tu código obligatorio de acceso de 4 dígitos para autorizar el ingreso y retiro de fondos."
+                procesando = false
             }
         }
     }
@@ -170,12 +175,14 @@ class PinActivity : AppCompatActivity() {
                     mostrarError("Código incorrecto (intento ${3 - estado.intentosRestantes} de 3)")
                     pinIngresado.clear()
                     actualizarDots()
+                    procesando = false
                 }
 
                 is SavingsState.PinBloqueado -> {
                     mostrarError("Tu cuenta de ahorros se bloqueó temporalmente por 15 minutos tras varios intentos fallidos.")
                     pinIngresado.clear()
                     actualizarDots()
+                    procesando = false
                 }
 
                 is SavingsState.Error -> {

@@ -57,8 +57,18 @@ class MovementRepository {
     }
 
     /** Calcula el saldo total (ingresos - gastos) de todos los movimientos. */
+    /** Saldo disponible = ingresos - gastos - dinero guardado en metas activas/completadas. */
     suspend fun calcularSaldo(): Double = withTimeout(TIMEOUT_MS) {
         val movimientos = obtenerMovimientos()
-        movimientos.sumOf { if (it.tipo == "ingreso") it.monto else -it.monto }
+        val neto = movimientos.sumOf { if (it.tipo == "ingreso") it.monto else -it.monto }
+
+        val metas = firestore.collection("users").document(uidActual())
+            .collection("goals")
+            .whereIn("estado", listOf("activa", "completada"))
+            .get()
+            .await()
+        val enMetas = metas.documents.sumOf { it.getDouble("montoAhorrado") ?: 0.0 }
+
+        neto - enMetas
     }
-}
+    }
