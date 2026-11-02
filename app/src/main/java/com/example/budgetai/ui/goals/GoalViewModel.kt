@@ -112,6 +112,36 @@ class GoalViewModel : ViewModel() {
             }
         }
     }
+    // ---------- UPDATE ----------
+
+    fun actualizarMeta(
+        id: String, nombre: String, categoria: String,
+        monto: Double?, montoAhorrado: Double, fecha: Timestamp?
+    ) {
+        if (ocupado()) return
+
+        val errores = validar(nombre, categoria, monto, montoAhorrado, fecha).toMutableMap()
+        errores.remove("ahorroInicial") // aquí no se edita; el error real es del objetivo
+        if (monto != null && monto > 0 && monto < montoAhorrado) {
+            errores["monto"] = "El objetivo no puede ser menor a lo que ya ahorraste"
+        }
+        if (errores.isNotEmpty()) {
+            _goalState.value = GoalState.ErrorCampos(errores)
+            return
+        }
+
+        _goalState.value = GoalState.Loading
+        viewModelScope.launch {
+            try {
+                delay(1200) // misma pantalla de análisis; con la IA real será la llamada a la API
+                val plan = calcularPlan(monto!!, montoAhorrado, fecha!!)
+                repository.actualizarMeta(id, nombre, categoria, monto, fecha, plan.ahorroMensual)
+                _goalState.value = GoalState.MetaActualizada
+            } catch (e: Exception) {
+                _goalState.value = GoalState.Error(e.mensajeAmigable())
+            }
+        }
+    }
 
     // ---------- Helpers ----------
 

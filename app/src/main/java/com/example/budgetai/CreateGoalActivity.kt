@@ -30,7 +30,10 @@ class CreateGoalActivity : AppCompatActivity() {
 
     private var categoria = ""
     private var fechaElegida: Calendar? = null
+    private var goalIdEditar: String? = null
+    private var ahorradoActual = 0.0
     private val formatoFecha = SimpleDateFormat("dd/MM/yyyy", Locale("es", "CO"))
+
 
     private val selectorCategoria =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -54,6 +57,12 @@ class CreateGoalActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.btnBack).setOnClickListener { finish() }
 
+        goalIdEditar = intent.getStringExtra("goalId")
+        if (goalIdEditar != null) {
+            findViewById<TextView>(R.id.tvTituloPantalla).text = "Modificar meta"
+            etAhorroInicial.isEnabled = false // solo cambia con "Agregar dinero"
+        }
+
         tvCategoria.setOnClickListener {
             selectorCategoria.launch(
                 Intent(this, SelectCategoryActivity::class.java)
@@ -70,6 +79,7 @@ class CreateGoalActivity : AppCompatActivity() {
         etAhorroInicial.addTextChangedListener(watcher { limpiarError("ahorroInicial") })
 
         observarEstado()
+        goalIdEditar?.let { viewModel.cargarMeta(it) }
     }
 
     private fun mostrarSelectorFecha() {
@@ -82,13 +92,22 @@ class CreateGoalActivity : AppCompatActivity() {
     }
 
     private fun continuar() {
-        viewModel.generarPlan(
-            nombre = etNombre.text.toString().trim(),
-            categoria = categoria,
-            monto = etMonto.text.toString().toDoubleOrNull(),
-            ahorroInicial = etAhorroInicial.text.toString().toDoubleOrNull(),
-            fecha = fechaElegida?.let { Timestamp(it.time) }
-        )
+        val nombre = etNombre.text.toString().trim()
+        val monto = etMonto.text.toString().toDoubleOrNull()
+        val fecha = fechaElegida?.let { Timestamp(it.time) }
+
+        val id = goalIdEditar
+        if (id != null) {
+            viewModel.actualizarMeta(id, nombre, categoria, monto, ahorradoActual, fecha)
+        } else {
+            viewModel.generarPlan(
+                nombre = nombre,
+                categoria = categoria,
+                monto = monto,
+                ahorroInicial = etAhorroInicial.text.toString().toDoubleOrNull(),
+                fecha = fecha
+            )
+        }
     }
 
     private fun observarEstado() {
@@ -112,10 +131,23 @@ class CreateGoalActivity : AppCompatActivity() {
                             .putExtra("fechaMillis", fechaElegida!!.timeInMillis)
                     )
                 }
+                is GoalState.DetalleCargado -> {
+                    loadingOverlay.visibility = View.GONE
+                    precargarMeta(estado.meta)
+                }
+
+                is GoalState.MetaActualizada -> {
+                    loadingOverlay.visibility = View.GONE
+                    finish() // vuelve al detalle, que se recarga solo en onResume
+                }
+
+
 
                 is GoalState.Error -> loadingOverlay.visibility = View.GONE
 
                 else -> Unit
+
+
             }
         }
     }
@@ -146,6 +178,16 @@ class CreateGoalActivity : AppCompatActivity() {
             vista.setBackgroundResource(R.drawable.bg_field)
             tvError.visibility = View.GONE
         }
+    }
+    private fun precargarMeta(meta: com.example.budgetai.data.model.Goal) {
+        etNombre.setText(meta.nombre)
+        categoria = meta.categoria
+        tvCategoria.text = "${SelectCategoryActivity.emojiDe(meta.categoria)} ${meta.categoria}"
+        etMonto.setText(meta.montoObjetivo.toInt().toString())
+        ahorradoActual = meta.montoAhorrado
+        etAhorroInicial.setText(meta.montoAhorrado.toInt().toString())
+        fechaElegida = Calendar.getInstance().apply { time = meta.fechaObjetivo.toDate() }
+        tvFecha.text = formatoFecha.format(fechaElegida!!.time)
     }
 
     private fun watcher(onChanged: () -> Unit) = object : android.text.TextWatcher {

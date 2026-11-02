@@ -126,6 +126,18 @@
                 android:fontFamily="@font/geist_bold"
                 android:textSize="16sp"/>
 
+            <TextView
+                android:id="@+id/btnModificarMeta"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:background="@drawable/bg_field"
+                android:text="Modificar meta"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/geist_semibold"
+                android:textSize="15sp"/>
+
             <!-- Solo al 100%. La acción se conecta en la Fase E (Delete) -->
             <TextView
                 android:id="@+id/btnRetirarMeta"

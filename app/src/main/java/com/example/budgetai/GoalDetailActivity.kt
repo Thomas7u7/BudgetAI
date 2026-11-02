@@ -42,6 +42,9 @@ class GoalDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.btnCrearNueva).setOnClickListener {
             startActivity(Intent(this, CreateGoalActivity::class.java))
         }
+        findViewById<TextView>(R.id.btnModificarMeta).setOnClickListener {
+            startActivity(Intent(this, CreateGoalActivity::class.java).putExtra("goalId", goalId))
+        }
 
         viewModel.goalState.observe(this) { estado ->
             when (estado) {
@@ -85,6 +88,7 @@ class GoalDetailActivity : AppCompatActivity() {
         findViewById<View>(R.id.btnRetirarMeta).visibility = if (completada) View.VISIBLE else View.GONE
         findViewById<View>(R.id.btnCrearNueva).visibility = if (completada) View.VISIBLE else View.GONE
         findViewById<View>(R.id.cardConsejo).visibility = if (completada) View.GONE else View.VISIBLE
+        findViewById<View>(R.id.btnModificarMeta).visibility = if (completada) View.GONE else View.VISIBLE
     }
 
     /** Consejo por reglas. Aquí se conectará la IA real al final del proyecto. */
