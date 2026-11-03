@@ -8,6 +8,7 @@ import com.example.budgetai.data.model.Goal
 import com.example.budgetai.data.model.GoalPlan
 import com.example.budgetai.data.model.GoalState
 import com.example.budgetai.data.repository.ERROR_FONDOS
+import com.example.budgetai.data.repository.ERROR_OBJETIVO
 import com.example.budgetai.data.repository.GoalRepository
 import com.example.budgetai.util.mensajeAmigable
 import com.google.firebase.Timestamp
@@ -55,7 +56,7 @@ class GoalViewModel : ViewModel() {
         monto: Double?, ahorroInicial: Double?, fecha: Timestamp?
     ) {
         if (ocupado()) return
-        val errores = validar(nombre, categoria, monto, ahorroInicial, fecha)
+        val errores = validar(nombre, categoria, monto, ahorroInicial, fecha, esEdicion = false)
         if (errores.isNotEmpty()) {
             _goalState.value = GoalState.ErrorCampos(errores)
             return
@@ -108,7 +109,11 @@ class GoalViewModel : ViewModel() {
                 repository.agregarDinero(id, monto)
                 _goalState.value = GoalState.DineroAgregado
             } catch (e: Exception) {
-                _goalState.value = errorDe(e, "deposito")
+                _goalState.value = if (e.message == ERROR_OBJETIVO) {
+                    GoalState.ErrorCampos(mapOf("deposito" to "El monto supera lo que falta para esta meta"))
+                } else {
+                    errorDe(e, "deposito")
+                }
             }
         }
     }
@@ -120,7 +125,7 @@ class GoalViewModel : ViewModel() {
     ) {
         if (ocupado()) return
 
-        val errores = validar(nombre, categoria, monto, montoAhorrado, fecha).toMutableMap()
+        val errores = validar(nombre, categoria, monto, montoAhorrado, fecha, esEdicion = true).toMutableMap()
         errores.remove("ahorroInicial") // aquí no se edita; el error real es del objetivo
         if (monto != null && monto > 0 && monto < montoAhorrado) {
             errores["monto"] = "El objetivo no puede ser menor a lo que ya ahorraste"
@@ -176,7 +181,8 @@ class GoalViewModel : ViewModel() {
 
     private fun validar(
         nombre: String, categoria: String,
-        monto: Double?, ahorroInicial: Double?, fecha: Timestamp?
+        monto: Double?, ahorroInicial: Double?, fecha: Timestamp?,
+        esEdicion: Boolean
     ): Map<String, String> {
         val errores = mutableMapOf<String, String>()
         val obligatorio = "Este campo es obligatorio"
@@ -188,12 +194,13 @@ class GoalViewModel : ViewModel() {
         else if (monto <= 0) errores["monto"] = "Ingresa un monto válido mayor a \$0"
 
         if (ahorroInicial == null) errores["ahorroInicial"] = obligatorio
+        else if (ahorroInicial < 0) errores["ahorroInicial"] = "El ahorro inicial no puede ser negativo"
         else if (monto != null && ahorroInicial > monto) {
             errores["ahorroInicial"] = "El ahorro inicial no puede superar el objetivo"
         }
 
         if (fecha == null) errores["fecha"] = obligatorio
-        else if (fecha.toDate().time < System.currentTimeMillis()) {
+        else if (!esEdicion && fecha.toDate().time < System.currentTimeMillis()) {
             errores["fecha"] = "La fecha debe ser posterior a hoy"
         }
         return errores

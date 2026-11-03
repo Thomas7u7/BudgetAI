@@ -9,14 +9,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.budgetai.data.model.SavingsGoal
-import com.example.budgetai.data.model.SavingsState
 import com.example.budgetai.ui.savings.ChatAdapter
 import com.example.budgetai.ui.savings.ChatMessage
 import com.example.budgetai.ui.savings.SavingsViewModel
-import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class SavingsAIActivity : AppCompatActivity() {
 
@@ -24,11 +19,11 @@ class SavingsAIActivity : AppCompatActivity() {
 
     private lateinit var rvChat: RecyclerView
     private lateinit var etMensaje: EditText
+    private lateinit var btnEnviar: TextView
+    private lateinit var layoutSugerencias: LinearLayout
     private lateinit var adapter: ChatAdapter
 
-    private var metaActiva: SavingsGoal? = null
-    private val formatoMoneda = NumberFormat.getInstance(Locale("es", "CO"))
-    private val formatoFecha = SimpleDateFormat("dd 'de' MMMM 'de' yyyy", Locale("es", "CO"))
+    private val conversacion = mutableListOf<ChatMessage>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,20 +31,22 @@ class SavingsAIActivity : AppCompatActivity() {
 
         rvChat = findViewById(R.id.rvChat)
         etMensaje = findViewById(R.id.etMensaje)
+        btnEnviar = findViewById(R.id.btnEnviar)
+        layoutSugerencias = findViewById(R.id.layoutSugerencias)
 
         findViewById<TextView>(R.id.btnBack).setOnClickListener { finish() }
 
-        adapter = ChatAdapter(mutableListOf())
+        adapter = ChatAdapter(conversacion)
         rvChat.layoutManager = LinearLayoutManager(this)
         rvChat.adapter = adapter
 
-        findViewById<TextView>(R.id.btnEnviar).setOnClickListener { enviarMensaje() }
+        btnEnviar.setOnClickListener { enviarMensaje() }
         findViewById<TextView>(R.id.btnSugerencia1).setOnClickListener {
-            etMensaje.setText("¿Cómo voy con mi meta del auto y cuál es el plan de ahorro sugerido?")
+            etMensaje.setText("Dame 3 recomendaciones para ahorrar mejor según mis finanzas.")
             enviarMensaje()
         }
         findViewById<TextView>(R.id.btnSugerencia2).setOnClickListener {
-            etMensaje.setText("¿Cuánto me falta para mi ahorro y cuándo termino?")
+            etMensaje.setText("¿Cómo van mis ahorros y cuánto me falta para completar mi objetivo?")
             enviarMensaje()
         }
 
@@ -65,80 +62,69 @@ class SavingsAIActivity : AppCompatActivity() {
             // ya estamos aquí
         }
 
-        observarEstado()
-        viewModel.cargarMetaActiva()
+        observarChat()
 
-        mostrarMensajeBienvenida()
-    }
-
-    private fun mostrarMensajeBienvenida() {
-        adapter.agregarMensaje(
+        agregarMensaje(
             ChatMessage(
-                "Hola, soy tu asistente de ahorros. Cuéntame qué necesitas saber sobre tu meta y te ayudo con sugerencias.",
+                "Hola, soy BudgetIA. Reviso tus movimientos, saldo, metas y ahorros para darte recomendaciones.",
                 esUsuario = false
             )
+        )
+        solicitarDiagnostico()
+    }
+
+    private fun solicitarDiagnostico() {
+        viewModel.preguntarIA(
+            "Haz un diagnóstico breve de mis finanzas con los datos anteriores y dame 3 recomendaciones " +
+                "concretas de ahorro. No saludes, ve directo al análisis."
         )
     }
 
     private fun enviarMensaje() {
+        if (viewModel.cargandoIA.value == true) return
+
         val texto = etMensaje.text.toString().trim()
         if (texto.isEmpty()) return
 
-        adapter.agregarMensaje(ChatMessage(texto, esUsuario = true))
+        agregarMensaje(ChatMessage(texto, esUsuario = true))
         etMensaje.text.clear()
+        viewModel.preguntarIA(texto, historialTexto())
+    }
+
+    private fun observarChat() {
+        viewModel.respuestaIA.observe(this) { respuesta ->
+            if (respuesta == null) return@observe
+            val texto = if (respuesta.error) "⚠️ ${respuesta.texto}" else textoPlano(respuesta.texto)
+            agregarMensaje(ChatMessage(texto, esUsuario = false))
+            viewModel.consumirRespuestaIA()
+        }
+
+        viewModel.cargandoIA.observe(this) { cargando ->
+            btnEnviar.isEnabled = !cargando
+            btnEnviar.alpha = if (cargando) 0.4f else 1f
+            for (i in 0 until layoutSugerencias.childCount) {
+                layoutSugerencias.getChildAt(i).isEnabled = !cargando
+                layoutSugerencias.getChildAt(i).alpha = if (cargando) 0.4f else 1f
+            }
+        }
+    }
+
+    /** El TextView no interpreta Markdown: deja viñetas legibles y quita énfasis. */
+    private fun textoPlano(texto: String): String = texto
+        .replace("**", "")
+        .replace(Regex("(?m)^#{1,6}\\s*"), "")
+        .replace(Regex("(?m)^\\s*[*•-]\\s+"), "• ")
+        .trim()
+
+    private fun agregarMensaje(mensaje: ChatMessage) {
+        adapter.agregarMensaje(mensaje)
         rvChat.scrollToPosition(adapter.itemCount - 1)
-
-        val respuesta = generarRespuesta(texto)
-        rvChat.postDelayed({
-            adapter.agregarMensaje(ChatMessage(respuesta, esUsuario = false))
-            rvChat.scrollToPosition(adapter.itemCount - 1)
-        }, 500)
     }
 
-    /**
-     * Genera una respuesta simulada por reglas simples, usando los datos reales
-     * de la meta activa. No es un modelo de IA real — es una simulación por palabras clave,
-     * acorde al alcance definido para esta versión del proyecto.
-     */
-    private fun generarRespuesta(mensaje: String): String {
-        val meta = metaActiva
-            ?: return "Aún no tienes una meta de ahorro activa. Crea una desde \"Mi Ahorro\" para que pueda ayudarte con sugerencias."
-
-        val textoLower = mensaje.lowercase()
-        val progreso = meta.progreso()
-
-        return when {
-            textoLower.contains("cuánto") && (textoLower.contains("falta") || textoLower.contains("falto")) -> {
-                "Para tu meta \"${meta.nombre}\":\n" +
-                        "• Te faltan $${formatoMoneda.format(meta.montoFaltante().toInt())} COP\n" +
-                        "• Ahorrando $${formatoMoneda.format(meta.montoRecomendado.toInt())} por ${meta.frecuencia.lowercase()}, tu fecha estimada de logro es el ${formatoFecha.format(meta.fechaLimite.toDate())}."
-            }
-
-            textoLower.contains("cómo voy") || textoLower.contains("progreso") || textoLower.contains("plan") -> {
-                "Hola, actualmente tu meta \"${meta.nombre}\" está al $progreso% con un objetivo de $${formatoMoneda.format(meta.montoObjetivo.toInt())} COP.\n\n" +
-                        "• Ahorrando $${formatoMoneda.format(meta.montoAhorrado.toInt())}, tu fecha estimada de logro es el ${formatoFecha.format(meta.fechaLimite.toDate())}\n" +
-                        "• Consejo: programar depósitos pequeños de $${formatoMoneda.format(meta.montoRecomendado.toInt())} te ayudaría a construir el hábito más rápido y sin esfuerzo."
-            }
-
-            progreso >= 90 ->
-                "¡Vas excelente con \"${meta.nombre}\"! Estás al $progreso% de tu meta. Un último esfuerzo y lo logras."
-
-            progreso >= 50 ->
-                "Vas muy bien con \"${meta.nombre}\" ($progreso%). Si recibes algún ingreso extra, un abono adicional ayudaría a acelerar el logro de tu meta."
-
-            progreso > 0 ->
-                "Tu meta \"${meta.nombre}\" va al $progreso%. Te recomiendo mantener depósitos de $${formatoMoneda.format(meta.montoRecomendado.toInt())} por ${meta.frecuencia.lowercase()} para llegar a tiempo."
-
-            else ->
-                "Aún no has agregado dinero a \"${meta.nombre}\". Te sugiero hacer tu primer depósito hoy mismo para empezar a construir el hábito."
+    /** Conversación reciente para que Gemini mantenga el hilo. */
+    private fun historialTexto(): String =
+        conversacion.takeLast(8).joinToString("\n") { mensaje ->
+            val autor = if (mensaje.esUsuario) "Usuario" else "BudgetIA"
+            "$autor: ${mensaje.texto.take(600)}"
         }
-    }
-
-    private fun observarEstado() {
-        viewModel.savingsState.observe(this) { estado ->
-            if (estado is SavingsState.DetalleCargado) {
-                metaActiva = estado.meta
-            }
-        }
-    }
 }

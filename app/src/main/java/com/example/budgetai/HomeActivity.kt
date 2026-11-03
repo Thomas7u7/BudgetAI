@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 class HomeActivity : AppCompatActivity() {
 
     private val userViewModel: UserViewModel by viewModels()
-    private val movementViewModel: com.example.budgetai.ui.movements.MovementViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

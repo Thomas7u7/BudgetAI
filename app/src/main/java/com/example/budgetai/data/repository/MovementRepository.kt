@@ -46,9 +46,17 @@ class MovementRepository {
         coleccion().add(datos).await()
     }
 
-    /** Actualiza un movimiento existente. */
+    /** Actualiza un movimiento existente sin perder creadoEn. */
     suspend fun actualizarMovimiento(id: String, movimiento: Movement) = withTimeout(TIMEOUT_MS) {
-        coleccion().document(id).set(movimiento).await()
+        coleccion().document(id).update(
+            mapOf(
+                "tipo" to movimiento.tipo,
+                "monto" to movimiento.monto,
+                "categoria" to movimiento.categoria,
+                "descripcion" to movimiento.descripcion,
+                "fecha" to movimiento.fecha
+            )
+        ).await()
     }
 
     /** Elimina un movimiento. */
@@ -56,19 +64,18 @@ class MovementRepository {
         coleccion().document(id).delete().await()
     }
 
-    /** Calcula el saldo total (ingresos - gastos) de todos los movimientos. */
-    /** Saldo disponible = ingresos - gastos - dinero guardado en metas activas/completadas. */
+    /** Saldo disponible = ingresos - gastos. */
     suspend fun calcularSaldo(): Double = withTimeout(TIMEOUT_MS) {
         val movimientos = obtenerMovimientos()
-        val neto = movimientos.sumOf { if (it.tipo == "ingreso") it.monto else -it.monto }
+        val totalIngresos = movimientos.filter { it.tipo.equals("ingreso", ignoreCase = true) }.sumOf { it.monto }
+        val totalGastos = movimientos.filter { it.tipo.equals("gasto", ignoreCase = true) }.sumOf { it.monto }
 
-        val metas = firestore.collection("users").document(uidActual())
-            .collection("goals")
-            .whereIn("estado", listOf("activa", "completada"))
-            .get()
-            .await()
-        val enMetas = metas.documents.sumOf { it.getDouble("montoAhorrado") ?: 0.0 }
+        val usuarioRef = firestore.collection("users").document(uidActual())
+        val perfilSnap = usuarioRef.get().await()
+        val ingresoPerfil = perfilSnap.getDouble("informacionFinanciera.ingresoMensual") ?: 0.0
 
-        neto - enMetas
+        val ingresosBase = if (totalIngresos > 0) totalIngresos else ingresoPerfil
+        val neto = ingresosBase - totalGastos
+        if (neto < 0 && totalIngresos == 0.0) 0.0 else neto
     }
-    }
+}

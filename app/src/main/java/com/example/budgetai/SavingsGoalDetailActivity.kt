@@ -92,7 +92,7 @@ class SavingsGoalDetailActivity : AppCompatActivity() {
     /** Diálogo de confirmación antes de eliminar — parte DELETE del CRUD. */
     private fun confirmarEliminar() {
         AlertDialog.Builder(this)
-            .setTitle("¿Eliminar esta meta?")
+            .setTitle("¿Eliminar este ahorro?")
             .setMessage("Esta acción no se puede deshacer. Se eliminará \"${tvTitulo.text}\" junto con todo su historial de depósitos y retiros.")
             .setPositiveButton("Eliminar") { _, _ ->
                 eliminando = true
@@ -116,7 +116,7 @@ class SavingsGoalDetailActivity : AppCompatActivity() {
 
                 is SavingsState.Eliminado -> {
                     loadingOverlay.visibility = View.GONE
-                    Toast.makeText(this, "Meta eliminada", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Ahorro eliminado", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, SavingsHomeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)

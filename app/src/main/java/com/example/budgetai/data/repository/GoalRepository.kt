@@ -10,6 +10,7 @@ import kotlinx.coroutines.withTimeout
 
 private const val TIMEOUT_MS = 15_000L
 const val ERROR_FONDOS = "FONDOS_INSUFICIENTES"
+const val ERROR_OBJETIVO = "EXCEDE_OBJETIVO"
 
 class GoalRepository {
 
@@ -65,7 +66,11 @@ class GoalRepository {
         firestore.runTransaction { tx ->
             val snap = tx.get(ref)
             val objetivo = snap.getDouble("montoObjetivo") ?: 0.0
-            val nuevo = (snap.getDouble("montoAhorrado") ?: 0.0) + monto
+            val actual = snap.getDouble("montoAhorrado") ?: 0.0
+            if (monto <= 0 || monto > (objetivo - actual)) {
+                throw IllegalStateException(ERROR_OBJETIVO)
+            }
+            val nuevo = actual + monto
             tx.update(ref, "montoAhorrado", nuevo)
             if (objetivo > 0 && nuevo >= objetivo) tx.update(ref, "estado", "completada")
             nuevo

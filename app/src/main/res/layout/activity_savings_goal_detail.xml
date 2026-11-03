@@ -52,7 +52,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Progreso de tu meta"
+                    android:text="Progreso de tu ahorro"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:fontFamily="@font/geist_semibold"/>
@@ -165,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="center"
-                    android:text="Aún no has agregado dinero a esta meta. Haz tu primer depósito para ver tu progreso."
+                    android:text="Aún no has agregado dinero a este ahorro. Haz tu primer depósito para ver tu progreso."
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:fontFamily="@font/geist_regular"/>
@@ -191,7 +191,7 @@
                 android:layout_height="52dp"
                 android:gravity="center"
                 android:background="@drawable/bg_field"
-                android:text="Editar meta"
+                android:text="Editar ahorro"
                 android:textColor="@color/text_primary"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/geist_semibold"
@@ -204,7 +204,7 @@
                 android:layout_height="52dp"
                 android:gravity="center"
                 android:background="@drawable/bg_field"
-                android:text="🗑 Eliminar meta"
+                android:text="🗑 Eliminar ahorro"
                 android:textColor="@color/error_red"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/geist_semibold"

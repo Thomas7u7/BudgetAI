@@ -4,6 +4,7 @@ import com.example.budgetai.data.model.Usuario
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
 
@@ -40,9 +41,10 @@ class AuthRepository {
         val uid = resultado.user?.uid
             ?: throw IllegalStateException("No se pudo obtener el UID del usuario")
 
+        // merge crea el campo si el perfil aún no existe, en lugar de fallar con NOT_FOUND.
         firestore.collection("users")
             .document(uid)
-            .update("ultimoAcceso", Timestamp.now())
+            .set(mapOf("ultimoAcceso" to Timestamp.now()), SetOptions.merge())
             .await()
 
         uid

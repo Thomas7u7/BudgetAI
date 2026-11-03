@@ -4,16 +4,21 @@ import com.example.budgetai.data.model.SavingsGoal
 import com.example.budgetai.data.model.SavingsMovement
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
+import android.util.Base64
 import java.security.MessageDigest
+import java.security.SecureRandom
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 
 private const val TIMEOUT_MS = 15_000L
 private const val MAX_INTENTOS_PIN = 3
 private const val MINUTOS_BLOQUEO = 15L
+private const val PIN_ITERACIONES = 100_000
+private const val PIN_PREFIJO = "pbkdf2"
 
 class SavingsRepository {
 
@@ -80,7 +85,23 @@ class SavingsRepository {
     }
 
     suspend fun actualizarMeta(id: String, meta: SavingsGoal) = withTimeout(TIMEOUT_MS) {
-        coleccionMetas().document(id).set(meta).await()
+        val ref = coleccionMetas().document(id)
+        firestore.runTransaction { tx ->
+            val existente = tx.get(ref).toObject(SavingsGoal::class.java)
+                ?: throw IllegalStateException("No se encontró la meta")
+            // Conserva los campos que no se editan (activa, creadaEn y el dinero realmente ahorrado).
+            tx.set(
+                ref,
+                meta.copy(
+                    id = "",
+                    montoAhorrado = existente.montoAhorrado,
+                    activa = existente.activa,
+                    completada = existente.montoAhorrado >= meta.montoObjetivo,
+                    creadaEn = existente.creadaEn
+                )
+            )
+            null
+        }.await()
     }
 
     suspend fun eliminarMeta(id: String) = withTimeout(TIMEOUT_MS) {
@@ -146,9 +167,37 @@ class SavingsRepository {
 
     // ---------- PIN de seguridad ----------
 
-    private fun hashPin(pin: String): String {
+    /** Hash heredado sin sal; solo se usa para verificar y migrar PIN antiguos. */
+    private fun sha256Legado(pin: String): String {
         val bytes = MessageDigest.getInstance("SHA-256").digest(pin.toByteArray())
         return bytes.joinToString("") { "%02x".format(it) }
+    }
+
+    private fun hashPin(pin: String, salt: ByteArray, iteraciones: Int = PIN_ITERACIONES): String {
+        val spec = PBEKeySpec(pin.toCharArray(), salt, iteraciones, 256)
+        val hash = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(spec).encoded
+        spec.clearPassword()
+        return "$PIN_PREFIJO:$iteraciones:${Base64.encodeToString(salt, Base64.NO_WRAP)}:${Base64.encodeToString(hash, Base64.NO_WRAP)}"
+    }
+
+    private fun nuevoHashPin(pin: String): String {
+        val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
+        return hashPin(pin, salt)
+    }
+
+    private fun verificarHash(pin: String, guardado: String): Boolean {
+        if (!guardado.startsWith("$PIN_PREFIJO:")) return guardado == sha256Legado(pin)
+        val partes = guardado.split(":")
+        if (partes.size != 4) return false
+        val iteraciones = partes[1].toIntOrNull() ?: return false
+        return try {
+            val salt = Base64.decode(partes[2], Base64.NO_WRAP)
+            val esperado = Base64.decode(partes[3], Base64.NO_WRAP)
+            val calculado = hashPin(pin, salt, iteraciones).split(":").last()
+            MessageDigest.isEqual(esperado, Base64.decode(calculado, Base64.NO_WRAP))
+        } catch (e: Exception) {
+            false
+        }
     }
 
     suspend fun tienePinConfigurado(): Boolean = withTimeout(TIMEOUT_MS) {
@@ -158,7 +207,7 @@ class SavingsRepository {
     }
 
     suspend fun configurarPin(pin: String) = withTimeout(TIMEOUT_MS) {
-        val hash = hashPin(pin)
+        val hash = nuevoHashPin(pin)
         documentoUsuario().update(
             mapOf(
                 "seguridad.pinAhorroHash" to hash,
@@ -181,15 +230,18 @@ class SavingsRepository {
             throw IllegalStateException("BLOQUEADO")
         }
 
-        val esCorrecto = hashGuardado != null && hashGuardado == hashPin(pin)
+        val esCorrecto = hashGuardado != null && verificarHash(pin, hashGuardado)
 
         if (esCorrecto) {
-            documentoUsuario().update(
-                mapOf(
-                    "seguridad.intentosFallidosPin" to 0,
-                    "seguridad.bloqueadoHasta" to null
-                )
-            ).await()
+            val actualizaciones = mutableMapOf<String, Any?>(
+                "seguridad.intentosFallidosPin" to 0,
+                "seguridad.bloqueadoHasta" to null
+            )
+            // Migra el hash heredado (SHA-256 sin sal) a PBKDF2 con sal.
+            if (!hashGuardado!!.startsWith("$PIN_PREFIJO:")) {
+                actualizaciones["seguridad.pinAhorroHash"] = nuevoHashPin(pin)
+            }
+            documentoUsuario().update(actualizaciones).await()
         } else {
             val intentosActuales = (snapshot.getLong("seguridad.intentosFallidosPin") ?: 0).toInt() + 1
             val actualizaciones = mutableMapOf<String, Any>(

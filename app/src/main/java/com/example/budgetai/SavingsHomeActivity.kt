@@ -90,7 +90,7 @@ class SavingsHomeActivity : AppCompatActivity() {
 
     private fun irADepositar() {
         if (metaActivaId == null) {
-            Toast.makeText(this, "Primero crea una meta de ahorro", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Primero crea un fondo de ahorro", Toast.LENGTH_SHORT).show()
             return
         }
         val intent = Intent(this, DepositSavingsActivity::class.java)
@@ -100,7 +100,7 @@ class SavingsHomeActivity : AppCompatActivity() {
 
     private fun irARetirar() {
         if (metaActivaId == null) {
-            Toast.makeText(this, "Primero crea una meta de ahorro", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Primero crea un fondo de ahorro", Toast.LENGTH_SHORT).show()
             return
         }
         val intent = Intent(this, WithdrawSavingsActivity::class.java)
@@ -110,7 +110,7 @@ class SavingsHomeActivity : AppCompatActivity() {
 
     private fun irAHistorial() {
         if (metaActivaId == null) {
-            Toast.makeText(this, "Primero crea una meta de ahorro", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Primero crea un fondo de ahorro", Toast.LENGTH_SHORT).show()
             return
         }
         val intent = Intent(this, SavingsHistoryActivity::class.java)
@@ -131,7 +131,7 @@ class SavingsHomeActivity : AppCompatActivity() {
                     cardMetaActiva.visibility = android.view.View.GONE
                     emptyState.visibility = android.view.View.VISIBLE
                     tvSaldoTotal.text = "$0 COP"
-                    tvConsejoIA.text = "Crea tu primera meta para empezar a recibir consejos personalizados."
+                    tvConsejoIA.text = "Crea tu primer ahorro para empezar a recibir consejos personalizados."
                 }
 
                 is SavingsState.Error -> {

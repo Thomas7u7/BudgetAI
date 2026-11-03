@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Aún no hay movimientos para esta meta"
+            android:text="Aún no hay movimientos para este ahorro"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:fontFamily="@font/geist_semibold"/>

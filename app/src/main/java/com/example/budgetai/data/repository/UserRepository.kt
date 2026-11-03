@@ -5,6 +5,7 @@ import com.example.budgetai.data.model.Preferencias
 import com.example.budgetai.data.model.Usuario
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
@@ -80,8 +81,29 @@ class UserRepository {
 
     suspend fun eliminarCuenta() = withTimeout(TIMEOUT_MS) {
         val uid = uidActual()
-        firestore.collection("users").document(uid).delete().await()
+        val usuarioRef = firestore.collection("users").document(uid)
+
+        // Firestore no borra subcolecciones en cascada: hay que eliminarlas antes del documento.
+        eliminarColeccion(usuarioRef.collection("movements"))
+        eliminarColeccion(usuarioRef.collection("goals"))
+        usuarioRef.collection("savingsGoals").get().await().documents.forEach { meta ->
+            eliminarColeccion(meta.reference.collection("movements"))
+        }
+        eliminarColeccion(usuarioRef.collection("savingsGoals"))
+        usuarioRef.delete().await()
+
         auth.currentUser?.delete()?.await()
+    }
+
+    private suspend fun eliminarColeccion(coleccion: CollectionReference) {
+        while (true) {
+            val docs = coleccion.limit(200).get().await().documents
+            if (docs.isEmpty()) return
+            val batch = firestore.batch()
+            docs.forEach { batch.delete(it.reference) }
+            batch.commit().await()
+            if (docs.size < 200) return
+        }
     }
 
     fun cerrarSesion() {

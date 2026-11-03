@@ -70,7 +70,7 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
 
         goalIdEditar = intent.getStringExtra("goalId")
         if (goalIdEditar != null) {
-            tvTituloPantalla.text = "Editar meta"
+            tvTituloPantalla.text = "Editar ahorro"
             btnCrear.text = "Guardar cambios"
         }
 
@@ -168,7 +168,7 @@ class CreateSavingsGoalActivity : AppCompatActivity() {
 
                 is SavingsState.GuardadoExitoso -> {
                     loadingOverlay.visibility = View.GONE
-                    val mensaje = if (goalIdEditar != null) "¡Meta actualizada exitosamente!" else "¡Meta creada exitosamente!"
+                    val mensaje = if (goalIdEditar != null) "¡Ahorro actualizado exitosamente!" else "¡Ahorro creado exitosamente!"
                     statusBanner.mostrarBanner(mensaje, TipoBanner.EXITO)
                     btnCrear.postDelayed({
                         val intent = Intent(this, SavingsHomeActivity::class.java)

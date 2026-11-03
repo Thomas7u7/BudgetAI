@@ -15,6 +15,7 @@ import com.example.budgetai.data.model.AuthErrorType
 import com.example.budgetai.data.model.AuthState
 import com.example.budgetai.ui.auth.AuthViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
@@ -29,6 +30,12 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Sesión persistente: entra directo si Firebase ya tiene un usuario autenticado.
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+            return
+        }
         setContentView(R.layout.activity_login)
 
         etEmail = findViewById(R.id.etEmail)

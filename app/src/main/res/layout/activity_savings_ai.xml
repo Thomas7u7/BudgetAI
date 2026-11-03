@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_field"
             android:padding="10dp"
-            android:text="¿Cómo voy con mi meta?"
+            android:text="¿Cómo voy con mis ahorros?"
             android:textColor="@color/text_primary"
             android:textSize="11sp"
             android:gravity="center"

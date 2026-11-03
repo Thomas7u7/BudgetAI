@@ -141,7 +141,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="META ACTIVA"
+                    android:text="AHORRO ACTIVO"
                     android:textColor="@color/green_primary"
                     android:textSize="11sp"
                     android:letterSpacing="0.05"
@@ -237,7 +237,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:text="Aún no tienes una meta de ahorro"
+                    android:text="Aún no tienes un fondo de ahorro"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:fontFamily="@font/geist_semibold"/>
@@ -248,7 +248,7 @@
                     android:layout_height="44dp"
                     android:gravity="center"
                     android:background="@drawable/bg_button_primary"
-                    android:text="Crear mi primera meta"
+                    android:text="Crear mi primer ahorro"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:paddingHorizontal="18dp"

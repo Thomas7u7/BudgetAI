@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.budgetai.data.model.SavingsGoal
 import com.example.budgetai.data.model.SavingsState
+import com.example.budgetai.data.repository.AIRepository
 import com.example.budgetai.data.repository.SavingsRepository
 import com.example.budgetai.util.mensajeAmigable
 import com.google.firebase.Timestamp
@@ -14,9 +15,39 @@ import kotlinx.coroutines.launch
 class SavingsViewModel : ViewModel() {
 
     private val repository = SavingsRepository()
+    private val aiRepository = AIRepository()
 
     private val _savingsState = MutableLiveData<SavingsState>(SavingsState.Idle)
     val savingsState: LiveData<SavingsState> = _savingsState
+
+    // ---------- Chat con Gemini ----------
+
+    private val _respuestaIA = MutableLiveData<RespuestaIA?>(null)
+    val respuestaIA: LiveData<RespuestaIA?> = _respuestaIA
+
+    private val _cargandoIA = MutableLiveData(false)
+    val cargandoIA: LiveData<Boolean> = _cargandoIA
+
+    fun preguntarIA(pregunta: String, historial: String = "") {
+        if (pregunta.isBlank() || _cargandoIA.value == true) return
+        _cargandoIA.value = true
+        viewModelScope.launch {
+            try {
+                _respuestaIA.value = RespuestaIA(aiRepository.responder(pregunta.trim(), historial))
+            } catch (e: Exception) {
+                _respuestaIA.value = RespuestaIA(
+                    e.message ?: "No pude conectar con BudgetIA. Revisa tu conexión e intenta de nuevo.",
+                    error = true
+                )
+            } finally {
+                _cargandoIA.value = false
+            }
+        }
+    }
+
+    fun consumirRespuestaIA() {
+        _respuestaIA.value = null
+    }
 
     // ---------- Metas ----------
 
@@ -70,8 +101,7 @@ class SavingsViewModel : ViewModel() {
             return
         }
 
-        val semanasRestantes = calcularSemanasRestantes(fechaLimite)
-        val montoRecomendado = if (semanasRestantes > 0) montoObjetivo / semanasRestantes else montoObjetivo
+        val montoRecomendado = calcularMontoPorPeriodo(montoObjetivo, fechaLimite, frecuencia)
 
         val meta = SavingsGoal(
             nombre = nombre,
@@ -107,8 +137,9 @@ class SavingsViewModel : ViewModel() {
             return
         }
 
-        val semanasRestantes = calcularSemanasRestantes(fechaLimite)
-        val montoRecomendado = if (semanasRestantes > 0) (montoObjetivo - montoAhorrado) / semanasRestantes else montoObjetivo
+        val montoRecomendado = calcularMontoPorPeriodo(
+            (montoObjetivo - montoAhorrado).coerceAtLeast(0.0), fechaLimite, frecuencia
+        )
 
         val meta = SavingsGoal(
             id = id,
@@ -144,10 +175,18 @@ class SavingsViewModel : ViewModel() {
         }
     }
 
-    private fun calcularSemanasRestantes(fechaLimite: Timestamp): Int {
+    /** Monto sugerido por periodo (semana, quincena o mes) según la frecuencia elegida. */
+    private fun calcularMontoPorPeriodo(faltante: Double, fechaLimite: Timestamp, frecuencia: String): Double {
+        if (faltante <= 0) return 0.0
         val milisRestantes = fechaLimite.toDate().time - System.currentTimeMillis()
-        val semanas = milisRestantes / (1000L * 60 * 60 * 24 * 7)
-        return semanas.toInt().coerceAtLeast(1)
+        val diasRestantes = (milisRestantes / (1000L * 60 * 60 * 24)).coerceAtLeast(1)
+        val diasPorPeriodo = when (frecuencia) {
+            "Semanal" -> 7
+            "Quincenal" -> 15
+            else -> 30
+        }
+        val periodos = (diasRestantes / diasPorPeriodo).coerceAtLeast(1)
+        return faltante / periodos
     }
 
     // ---------- Depósitos y retiros ----------
@@ -262,3 +301,5 @@ class SavingsViewModel : ViewModel() {
         }
     }
 }
+
+data class RespuestaIA(val texto: String, val error: Boolean = false)

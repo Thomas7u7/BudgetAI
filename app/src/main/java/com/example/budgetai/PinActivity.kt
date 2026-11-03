@@ -22,6 +22,7 @@ class PinActivity : AppCompatActivity() {
 
     private var modo = "configurar" // "configurar" | "depositar" | "retirar"
     private var procesando = false
+    private var resultadoObservado = false
     private var goalId: String = ""
     private var operacionPendiente: String = ""
     private var monto: Double = 0.0
@@ -189,6 +190,7 @@ class PinActivity : AppCompatActivity() {
                     mostrarError(estado.mensaje)
                     pinIngresado.clear()
                     actualizarDots()
+                    procesando = false
                 }
 
                 else -> Unit
@@ -211,6 +213,8 @@ class PinActivity : AppCompatActivity() {
     }
 
     private fun observarResultadoOperacion(tipo: String) {
+        if (resultadoObservado) return
+        resultadoObservado = true
         viewModel.savingsState.observe(this) { estado ->
             when (estado) {
                 is SavingsState.DepositoExitoso -> {
