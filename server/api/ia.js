@@ -96,11 +96,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: "No se recibió contexto financiero." });
   }
 
-  const clave = process.env.GEMINI_API_KEY;
-  if (!clave) {
-    console.error("Falta GEMINI_API_KEY en las variables de entorno");
-    return res.status(500).json({ error: "Servicio mal configurado." });
-  }
+
 
     const prompt = [
       `Fecha de hoy: ${new Date().toISOString().slice(0, 10)}`,
@@ -110,12 +106,13 @@ module.exports = async (req, res) => {
       "\nPREGUNTA DEL USUARIO:",
       pregunta,
     ].join("\n");
-
+    let uso = null;
     // 1) Gemini
     let texto = "";
     let limite = false;
     const claveGemini = process.env.GEMINI_API_KEY;
     if (claveGemini) {
+    const t0 = Date.now();
       try {
         const r = await fetch(URL_GEMINI, {
           method: "POST",
@@ -135,9 +132,18 @@ module.exports = async (req, res) => {
           signal: AbortSignal.timeout(20000),
         });
         if (r.ok) {
-          const j = JSON.parse(await r.text());
-          texto = (j.candidates?.[0]?.content?.parts ?? [])
-            .map((p) => p.text ?? "").join("").trim();
+                const j = JSON.parse(await r.text());
+                texto = (j.candidates?.[0]?.content?.parts ?? [])
+                  .map((p) => p.text ?? "").join("").trim();
+                const u = j.usageMetadata || {};
+                uso = {
+                  proveedor: "gemini",
+                  modelo: MODELO,
+                  tokens_in: u.promptTokenCount ?? 0,
+                  // los tokens de razonamiento se cobran como salida
+                  tokens_out: (u.candidatesTokenCount ?? 0) + (u.thoughtsTokenCount ?? 0),
+                  latencia_ms: Date.now() - t0,
+                };
         } else {
           if (r.status === 429) limite = true;
           console.error("Gemini devolvió", r.status);
@@ -154,6 +160,7 @@ module.exports = async (req, res) => {
 
     if (!texto && claveGroq) {
       for (const modelo of modelosGroq) {
+              const t0 = Date.now();
         try {
           const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
@@ -181,7 +188,16 @@ module.exports = async (req, res) => {
           texto = (j.choices?.[0]?.message?.content ?? "")
             .replace(/<think>[\s\S]*?<\/think>/g, "")
             .trim();
-          if (texto) break;
+                    if (texto) {
+                      uso = {
+                        proveedor: "groq",
+                        modelo,
+                        tokens_in: j.usage?.prompt_tokens ?? 0,
+                        tokens_out: j.usage?.completion_tokens ?? 0,
+                        latencia_ms: Date.now() - t0,
+                      };
+                      break;
+                    }
         } catch (e) {
           console.error(`Groq ${modelo} falló`, e);
         }
@@ -195,5 +211,6 @@ module.exports = async (req, res) => {
       return res.status(503).json({ error: "BudgetIA no está disponible. Intenta de nuevo." });
     }
 
-    return res.status(200).json({ texto });
+        console.log("USO", JSON.stringify(uso));
+        return res.status(200).json({ texto, uso });
   };
