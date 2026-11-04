@@ -93,64 +93,98 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: "Servicio mal configurado." });
   }
 
-  const prompt = [
-    `Fecha de hoy: ${new Date().toISOString().slice(0, 10)}`,
-    "CONTEXTO FINANCIERO REAL DEL USUARIO:",
-    contexto,
-    historial ? `\nCONVERSACIÓN PREVIA:\n${historial}` : "",
-    "\nPREGUNTA DEL USUARIO:",
-    pregunta,
-  ].join("\n");
+    const prompt = [
+      `Fecha de hoy: ${new Date().toISOString().slice(0, 10)}`,
+      "CONTEXTO FINANCIERO REAL DEL USUARIO:",
+      contexto,
+      historial ? `\nCONVERSACIÓN PREVIA:\n${historial}` : "",
+      "\nPREGUNTA DEL USUARIO:",
+      pregunta,
+    ].join("\n");
 
-  const cuerpoPeticion = {
-    systemInstruction: { parts: [{ text: INSTRUCCIONES }] },
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-    generationConfig: {
-      temperature: 0.6,
-      maxOutputTokens: 700,
-      thinkingConfig: { thinkingBudget: 0 },
-    },
-  };
-
-  let respuesta;
-  try {
-    respuesta = await fetch(URL_GEMINI, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "x-goog-api-key": clave,
-      },
-      body: JSON.stringify(cuerpoPeticion),
-      signal: AbortSignal.timeout(45000),
-    });
-  } catch (error) {
-    console.error("Gemini no respondió", error);
-    return res.status(503).json({ error: "Gemini no está disponible. Intenta de nuevo." });
-  }
-
-  const cuerpo = await respuesta.text();
-  if (!respuesta.ok) {
-    console.error("Gemini devolvió error", respuesta.status);
-    if (respuesta.status === 429) {
-      return res.status(429).json({ error: "Demasiadas solicitudes. Espera un momento." });
+    // 1) Gemini
+    let texto = "";
+    let limite = false;
+    const claveGemini = process.env.GEMINI_API_KEY;
+    if (claveGemini) {
+      try {
+        const r = await fetch(URL_GEMINI, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "x-goog-api-key": claveGemini,
+          },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: INSTRUCCIONES }] },
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.6,
+              maxOutputTokens: 700,
+              thinkingConfig: { thinkingBudget: 0 },
+            },
+          }),
+          signal: AbortSignal.timeout(20000),
+        });
+        if (r.ok) {
+          const j = JSON.parse(await r.text());
+          texto = (j.candidates?.[0]?.content?.parts ?? [])
+            .map((p) => p.text ?? "").join("").trim();
+        } else {
+          if (r.status === 429) limite = true;
+          console.error("Gemini devolvió", r.status);
+        }
+      } catch (e) {
+        console.error("Gemini falló", e);
+      }
     }
-    return res.status(503).json({ error: "Gemini no está disponible. Intenta de nuevo." });
-  }
 
-  let texto = "";
-  try {
-    const resultado = JSON.parse(cuerpo);
-    texto = (resultado.candidates?.[0]?.content?.parts ?? [])
-      .map((parte) => parte.text ?? "")
-      .join("")
-      .trim();
-  } catch (error) {
-    console.error("Respuesta ilegible de Gemini", error);
-  }
+    // 2) Respaldo gratuito: Groq (compatible con OpenAI)
+    const claveGroq = process.env.GROQ_API_KEY;
+    const modelosGroq = (process.env.GROQ_MODELS || "openai/gpt-oss-120b,qwen/qwen3.8-27b")
+      .split(",").map((m) => m.trim()).filter(Boolean);
 
-  if (!texto) {
-    return res.status(502).json({ error: "No pude generar una recomendación. Intenta de nuevo." });
-  }
+    if (!texto && claveGroq) {
+      for (const modelo of modelosGroq) {
+        try {
+          const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${claveGroq}`,
+            },
+            body: JSON.stringify({
+              model: modelo,
+              messages: [
+                { role: "system", content: INSTRUCCIONES },
+                { role: "user", content: prompt },
+              ],
+              temperature: 0.6,
+              max_tokens: 1024,
+            }),
+            signal: AbortSignal.timeout(20000),
+          });
+          if (!r.ok) {
+            if (r.status === 429) limite = true;
+            console.error(`Groq ${modelo} devolvió`, r.status);
+            continue;
+          }
+          const j = JSON.parse(await r.text());
+          texto = (j.choices?.[0]?.message?.content ?? "")
+            .replace(/<think>[\s\S]*?<\/think>/g, "")
+            .trim();
+          if (texto) break;
+        } catch (e) {
+          console.error(`Groq ${modelo} falló`, e);
+        }
+      }
+    }
 
-  return res.status(200).json({ texto });
-};
+    if (!texto) {
+      if (limite) {
+        return res.status(429).json({ error: "Demasiadas solicitudes. Espera un momento." });
+      }
+      return res.status(503).json({ error: "BudgetIA no está disponible. Intenta de nuevo." });
+    }
+
+    return res.status(200).json({ texto });
+  };
