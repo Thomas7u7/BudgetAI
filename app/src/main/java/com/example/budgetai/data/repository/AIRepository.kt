@@ -30,13 +30,9 @@ class AIRepository {
         val contexto = construirContexto()
 
         // Con AI_PROXY_URL la clave no viaja en el APK. Si falla el proxy, hace fallback al cliente directo.
+        // Con proxy configurado no se usa el cliente directo: el proxy ya tiene respaldo entre proveedores.
         if (BuildConfig.AI_PROXY_URL.isNotBlank()) {
-            val resultadoProxy = runCatching {
-                GeminiProxy.responder(BuildConfig.AI_PROXY_URL, pregunta, contexto, historial)
-            }
-            if (resultadoProxy.isSuccess) {
-                return resultadoProxy.getOrThrow()
-            }
+            return GeminiProxy.responder(BuildConfig.AI_PROXY_URL, pregunta, contexto, historial)
         }
 
         val prompt = buildString {
@@ -65,8 +61,11 @@ class AIRepository {
         val ingresoPerfil = perfil?.informacionFinanciera?.ingresoMensual ?: 0.0
         val ingresos = if (totalIngresos > 0) totalIngresos else ingresoPerfil
         val gastos = movimientos.filter { it.tipo.equals("gasto", ignoreCase = true) }.sumOf { it.monto }
-        var saldo = ingresos - gastos
-        if (saldo < 0 && totalIngresos == 0.0) saldo = 0.0
+
+// Mismo saldo que ve el usuario en el Home (ya descuenta lo apartado en metas)
+        val enMetas = metas.sumOf { it.montoAhorrado }
+        val saldo = runCatching { movimientosRepo.calcularSaldo() }
+            .getOrElse { (ingresos - gastos - enMetas).coerceAtLeast(0.0) }
 
         val hace30Dias = System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000
         val recientes = movimientos.filter { it.fecha.toDate().time >= hace30Dias }
@@ -96,6 +95,8 @@ class AIRepository {
                 appendLine("Moneda: COP")
             }
             appendLine("Saldo disponible: ${dinero(saldo)}")
+            appendLine("Saldo disponible: ${dinero(saldo)} (ya descontado el dinero apartado en metas)")
+            appendLine("Dinero apartado en metas: ${dinero(enMetas)}")
             appendLine("Ingresos registrados (total): ${dinero(ingresos)}")
             appendLine("Gastos registrados (total): ${dinero(gastos)}")
             appendLine("Últimos 30 días: ingresos ${dinero(ingresos30)}, gastos ${dinero(gastos30)}")

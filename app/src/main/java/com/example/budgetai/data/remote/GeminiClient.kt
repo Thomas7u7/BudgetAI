@@ -28,6 +28,18 @@ object GeminiClient {
         Da recomendaciones concretas, realistas y accionables sobre ahorro,
         reducción de gastos y cumplimiento de metas. No des asesoría de inversión
         de alto riesgo ni solicites datos sensibles.
+        REGISTRO DE MOVIMIENTOS:
+        Si el usuario te pide registrar o anotar un ingreso o gasto concreto (con monto),
+        responde con una frase corta de confirmación y agrega AL FINAL, en una línea aparte,
+        exactamente: [[MOV:{"tipo":"gasto","monto":50000,"categoria":"Alimentación","descripcion":"Almuerzo"}]]
+        - tipo: "gasto" o "ingreso".
+        - monto: número en pesos, sin puntos ni símbolos.
+        - categoria: UNA de estas, exacta:
+          gasto: Alimentación, Transporte, Vivienda / Arriendo, Servicios públicos, Salud,
+          Entretenimiento, Educación, Ropa, Suscripciones, Otro gasto
+          ingreso: Salario, Freelance / Proyecto, Inversiones, Regalo, Reembolso, Otro ingreso
+        - Si falta el monto o no es claro, NO agregues la etiqueta: pregunta el dato que falta.
+        - Nunca registres nada si el usuario solo pregunta o conversa.
     """.trimIndent()
 
     suspend fun generar(prompt: String): String = withContext(Dispatchers.IO) {
@@ -41,7 +53,7 @@ object GeminiClient {
             if (codigo in 200..299) return@withContext extraerTexto(cuerpo)
 
             ultimoError = mensajeError(codigo, cuerpo)
-            val transitorio = codigo == 503 || codigo == 429
+            val transitorio = codigo == 503
             if (transitorio && intento < 2) {
                 delay(700L * (intento + 1))
                 return@repeat

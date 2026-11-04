@@ -1,6 +1,8 @@
 package com.example.budgetai
 
 import android.content.Intent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -70,7 +72,7 @@ class SavingsAIActivity : AppCompatActivity() {
                 esUsuario = false
             )
         )
-        solicitarDiagnostico()
+        //solicitarDiagnostico()
     }
 
     private fun solicitarDiagnostico() {
@@ -94,8 +96,15 @@ class SavingsAIActivity : AppCompatActivity() {
     private fun observarChat() {
         viewModel.respuestaIA.observe(this) { respuesta ->
             if (respuesta == null) return@observe
-            val texto = if (respuesta.error) "⚠️ ${respuesta.texto}" else textoPlano(respuesta.texto)
-            agregarMensaje(ChatMessage(texto, esUsuario = false))
+            if (respuesta.error) {
+                agregarMensaje(ChatMessage("⚠️ ${respuesta.texto}", esUsuario = false))
+            } else {
+                val regex = Regex("""\[\[MOV:(\{.*?\})\]\]""", RegexOption.DOT_MATCHES_ALL)
+                val etiqueta = regex.find(respuesta.texto)
+                val limpio = regex.replace(respuesta.texto, "")
+                agregarMensaje(ChatMessage(textoPlano(limpio), esUsuario = false))
+                etiqueta?.let { confirmarMovimiento(it.groupValues[1]) }
+            }
             viewModel.consumirRespuestaIA()
         }
 
@@ -107,6 +116,40 @@ class SavingsAIActivity : AppCompatActivity() {
                 layoutSugerencias.getChildAt(i).alpha = if (cargando) 0.4f else 1f
             }
         }
+    }
+    private fun confirmarMovimiento(json: String) {
+        val obj = runCatching { org.json.JSONObject(json) }.getOrNull() ?: return
+        val tipo = obj.optString("tipo").lowercase()
+        val monto = obj.optDouble("monto", 0.0)
+        if (tipo !in listOf("gasto", "ingreso") || monto <= 0) return
+        val categoria = obj.optString("categoria").ifBlank {
+            if (tipo == "gasto") "Otro gasto" else "Otro ingreso"
+        }
+        val descripcion = obj.optString("descripcion")
+        val formato = java.text.NumberFormat.getInstance(java.util.Locale("es", "CO"))
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("¿Registrar este movimiento?")
+            .setMessage("${tipo.replaceFirstChar { it.uppercase() }} de $${formato.format(monto.toLong())}\n" +
+                    "Categoría: $categoria\n${descripcion}")
+            .setPositiveButton("Registrar") { _, _ ->
+                lifecycleScope.launch {
+                    try {
+                        com.example.budgetai.data.repository.MovementRepository().crearMovimiento(
+                            com.example.budgetai.data.model.Movement(
+                                tipo = tipo, monto = monto, categoria = categoria,
+                                descripcion = descripcion,
+                                fecha = com.google.firebase.Timestamp.now()
+                            )
+                        )
+                        agregarMensaje(ChatMessage("✅ Movimiento registrado.", esUsuario = false))
+                    } catch (e: Exception) {
+                        agregarMensaje(ChatMessage("⚠️ No pude registrarlo. Intenta de nuevo.", esUsuario = false))
+                    }
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     /** El TextView no interpreta Markdown: deja viñetas legibles y quita énfasis. */

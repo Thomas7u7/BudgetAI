@@ -65,6 +65,7 @@ class MovementRepository {
     }
 
     /** Saldo disponible = ingresos - gastos. */
+    /** Saldo disponible = ingresos - gastos - dinero apartado en metas activas/completadas. */
     suspend fun calcularSaldo(): Double = withTimeout(TIMEOUT_MS) {
         val movimientos = obtenerMovimientos()
         val totalIngresos = movimientos.filter { it.tipo.equals("ingreso", ignoreCase = true) }.sumOf { it.monto }
@@ -74,8 +75,14 @@ class MovementRepository {
         val perfilSnap = usuarioRef.get().await()
         val ingresoPerfil = perfilSnap.getDouble("informacionFinanciera.ingresoMensual") ?: 0.0
 
+        // Dinero que ya está dentro de las metas (las retiradas devuelven su dinero al saldo)
+        val metasSnap = usuarioRef.collection("goals").get().await()
+        val totalEnMetas = metasSnap.documents
+            .filter { it.getString("estado") != "retirada" }
+            .sumOf { it.getDouble("montoAhorrado") ?: 0.0 }
+
         val ingresosBase = if (totalIngresos > 0) totalIngresos else ingresoPerfil
-        val neto = ingresosBase - totalGastos
+        val neto = ingresosBase - totalGastos - totalEnMetas
         if (neto < 0 && totalIngresos == 0.0) 0.0 else neto
     }
 }
