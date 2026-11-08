@@ -86,6 +86,7 @@ async function llamar(m, q) {
         try { res = await llamar(m, p.q); }
         catch (e) {
           err = e.message + (e.cause ? ` (${e.cause.code || e.cause.message})` : "");
+          if (err.includes("HTTP 429")) break;
           await dormir(15000);   // espera antes de reintentar
         }
       }
