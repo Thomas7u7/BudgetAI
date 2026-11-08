@@ -82,9 +82,12 @@ async function llamar(m, q) {
   for (const m of MODELOS) {
     for (const p of PRUEBAS) {
       let res = null, err = "";
-      for (let intento = 0; intento < 2 && !res; intento++) {
+      for (let intento = 0; intento < 3 && !res; intento++) {
         try { res = await llamar(m, p.q); }
-        catch (e) { err = e.message; await dormir(15000); }   // espera si hay límite
+        catch (e) {
+          err = e.message + (e.cause ? ` (${e.cause.code || e.cause.message})` : "");
+          await dormir(15000);   // espera antes de reintentar
+        }
       }
       const costo = res ? (res.tin * m.pIn + res.tout * m.pOut) / 1e6 : 0;
       filas.push({
@@ -100,22 +103,33 @@ async function llamar(m, q) {
   }
 
   // Resumen por modelo
-  console.log("\nRESUMEN");
-  const resumen = MODELOS.map((m) => {
-    const f = filas.filter((x) => x.modelo === m.modelo);
-    const ok = f.filter((x) => !x.error);
-    const sum = (k) => ok.reduce((a, x) => a + x[k], 0);
-    return {
-      modelo: m.modelo,
-      tokens_in_prom: Math.round(sum("tokens_in") / (ok.length || 1)),
-      tokens_out_prom: Math.round(sum("tokens_out") / (ok.length || 1)),
-      latencia_prom_ms: Math.round(sum("latencia_ms") / (ok.length || 1)),
-      costo_total_usd: +sum("costo_usd").toFixed(6),
-      aciertos: `${sum("acierto")}/${f.length}`,
-      errores: f.length - ok.length,
-    };
-  });
-  console.table(resumen);
+    // Resumen por modelo (solo con las preguntas que respondieron TODOS los modelos)
+    console.log("\nRESUMEN");
+    const comunes = new Set(
+      PRUEBAS.map((p) => p.q).filter((q) =>
+        MODELOS.every((m) => filas.some((f) => f.modelo === m.modelo && f.pregunta === q && !f.error))
+      )
+    );
+    console.log(`Preguntas comparadas en igualdad de condiciones: ${comunes.size} de ${PRUEBAS.length}`);
+
+    const resumen = MODELOS.map((m) => {
+      const f = filas.filter((x) => x.modelo === m.modelo);
+      const ok = f.filter((x) => !x.error && comunes.has(x.pregunta));
+      const sum = (k) => ok.reduce((a, x) => a + x[k], 0);
+      const n = ok.length || 1;
+      return {
+        modelo: m.modelo,
+        tokens_in_prom: Math.round(sum("tokens_in") / n),
+        tokens_out_prom: Math.round(sum("tokens_out") / n),
+        latencia_prom_ms: Math.round(sum("latencia_ms") / n),
+        costo_prom_usd: +(sum("costo_usd") / n).toFixed(6),
+        costo_total_usd: +sum("costo_usd").toFixed(6),
+        aciertos: `${sum("acierto")}/${comunes.size}`,
+        llamadas_ok: `${f.filter((x) => !x.error).length}/${f.length}`,
+        errores: f.filter((x) => x.error).length,
+      };
+    });
+    console.table(resumen);
 
   const csv = ["modelo,tipo,pregunta,tokens_in,tokens_out,latencia_ms,costo_usd,acierto,error"]
     .concat(filas.map((x) => [x.modelo, x.tipo, `"${x.pregunta}"`, x.tokens_in, x.tokens_out,
