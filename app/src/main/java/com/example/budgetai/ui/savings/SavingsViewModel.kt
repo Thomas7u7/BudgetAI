@@ -7,10 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.budgetai.data.model.SavingsGoal
 import com.example.budgetai.data.model.SavingsState
 import com.example.budgetai.data.repository.AIRepository
+import com.example.budgetai.data.repository.ChatRepository
 import com.example.budgetai.data.repository.SavingsRepository
 import com.example.budgetai.util.mensajeAmigable
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class SavingsViewModel : ViewModel() {
 
@@ -47,6 +50,60 @@ class SavingsViewModel : ViewModel() {
 
     fun consumirRespuestaIA() {
         _respuestaIA.value = null
+    }
+
+    // ---------- Historial del chat ----------
+
+    private val chatRepository = ChatRepository()
+
+    /** Evita que dos guardados simultáneos creen dos conversaciones distintas. */
+    private val guardadoMutex = Mutex()
+
+    /** Conversación abierta. Null = chat nuevo que todavía no tiene ningún mensaje guardado. */
+    var chatIdActual: String? = null
+        private set
+
+    private val _historialChat = MutableLiveData<List<ChatMessage>?>(null)
+    val historialChat: LiveData<List<ChatMessage>?> = _historialChat
+
+    /**
+     * Abre una conversación:
+     *  - nueva = true  -> chat vacío (se crea en Firestore al enviar el primer mensaje).
+     *  - chatId != null -> esa conversación.
+     *  - ambos vacíos   -> la última conversación donde el usuario se quedó (o vacío si no hay).
+     * Si falla la lectura (sin red o sin permisos) el chat arranca vacío y sigue funcionando.
+     */
+    fun abrirConversacion(chatId: String?, nueva: Boolean) {
+        viewModelScope.launch {
+            if (nueva) {
+                chatIdActual = null
+                _historialChat.value = emptyList()
+                return@launch
+            }
+            val id = chatId ?: runCatching { chatRepository.ultimaConversacionId() }.getOrNull()
+            chatIdActual = id
+            _historialChat.value =
+                if (id == null) emptyList()
+                else runCatching { chatRepository.obtenerMensajes(id) }.getOrDefault(emptyList())
+        }
+    }
+
+    fun consumirHistorialChat() {
+        _historialChat.value = null
+    }
+
+    /** Guardar es "mejor esfuerzo": un fallo no debe interrumpir la conversación. */
+    fun guardarMensajeChat(mensaje: ChatMessage) {
+        val destino = chatIdActual
+        viewModelScope.launch {
+            guardadoMutex.withLock {
+                runCatching {
+                    val id = destino ?: chatIdActual
+                        ?: chatRepository.crearConversacion(mensaje.texto).also { chatIdActual = it }
+                    chatRepository.guardarMensaje(id, mensaje)
+                }
+            }
+        }
     }
 
     // ---------- Metas ----------

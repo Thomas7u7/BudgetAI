@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,28 @@ class SavingsAIActivity : AppCompatActivity() {
     private lateinit var adapter: ChatAdapter
 
     private val conversacion = mutableListOf<ChatMessage>()
+
+    /** Hasta que no se cargue el historial guardado no se envían mensajes (evita pisar la conversación). */
+    private var historialCargado = false
+
+    companion object {
+        /** Abre una conversación concreta del historial. */
+        const val EXTRA_CHAT_ID = "chatId"
+        /** Abre un chat vacío (la conversación se crea al enviar el primer mensaje). */
+        const val EXTRA_NUEVO = "nuevo"
+    }
+
+    /** Pantalla de historial: devuelve la conversación elegida o la orden de empezar una nueva. */
+    private val abrirHistorial = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { resultado ->
+        if (resultado.resultCode != RESULT_OK) return@registerForActivityResult
+        val datos = resultado.data ?: return@registerForActivityResult
+        cambiarConversacion(
+            chatId = datos.getStringExtra(EXTRA_CHAT_ID),
+            nueva = datos.getBooleanExtra(EXTRA_NUEVO, false)
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,16 +87,50 @@ class SavingsAIActivity : AppCompatActivity() {
             // ya estamos aquí
         }
 
+        findViewById<TextView>(R.id.btnHistorial).setOnClickListener { abrirPantallaHistorial() }
+        findViewById<TextView>(R.id.btnNuevoChat).setOnClickListener {
+            if (esperandoRespuesta()) return@setOnClickListener
+            cambiarConversacion(chatId = null, nueva = true)
+        }
+
         observarChat()
 
-        agregarMensaje(
-            ChatMessage(
-                "Hola, soy BudgetIA. Reviso tus movimientos, saldo, metas y ahorros para darte recomendaciones.",
-                esUsuario = false
-            )
-        )
+        // Retoma la conversación donde el usuario se quedó (o la que eligió en el historial).
+        // Al rotar la pantalla se vuelve a la misma conversación; si era un chat nuevo sin mensajes, sigue vacío.
+        val recreada = savedInstanceState != null
+        val chatSolicitado = if (recreada) viewModel.chatIdActual else intent.getStringExtra(EXTRA_CHAT_ID)
+        val nueva = if (recreada) viewModel.chatIdActual == null else intent.getBooleanExtra(EXTRA_NUEVO, false)
+        viewModel.abrirConversacion(chatSolicitado, nueva)
         //solicitarDiagnostico()
     }
+
+    private fun esperandoRespuesta(): Boolean {
+        if (viewModel.cargandoIA.value != true) return false
+        android.widget.Toast.makeText(
+            this, "Espera a que BudgetIA termine de responder.", android.widget.Toast.LENGTH_SHORT
+        ).show()
+        return true
+    }
+
+    private fun abrirPantallaHistorial() {
+        if (esperandoRespuesta()) return
+        abrirHistorial.launch(
+            Intent(this, ChatHistoryActivity::class.java)
+                .putExtra(EXTRA_CHAT_ID, viewModel.chatIdActual)
+        )
+    }
+
+    /** Cambia de conversación; no hace nada si ya es la abierta. */
+    private fun cambiarConversacion(chatId: String?, nueva: Boolean) {
+        if (!nueva && chatId != null && chatId == viewModel.chatIdActual) return
+        historialCargado = false
+        viewModel.abrirConversacion(chatId, nueva)
+    }
+
+    private fun mensajeBienvenida() = ChatMessage(
+        "Hola, soy BudgetIA. Reviso tus movimientos, saldo, metas y ahorros para darte recomendaciones.",
+        esUsuario = false
+    )
 
     private fun solicitarDiagnostico() {
         viewModel.preguntarIA(
@@ -83,12 +140,14 @@ class SavingsAIActivity : AppCompatActivity() {
     }
 
     private fun enviarMensaje() {
-        if (viewModel.cargandoIA.value == true) return
+        if (!historialCargado || viewModel.cargandoIA.value == true) return
 
         val texto = etMensaje.text.toString().trim()
         if (texto.isEmpty()) return
 
-        agregarMensaje(ChatMessage(texto, esUsuario = true))
+        val mensaje = ChatMessage(texto, esUsuario = true)
+        agregarMensaje(mensaje)
+        viewModel.guardarMensajeChat(mensaje)
         etMensaje.text.clear()
         viewModel.preguntarIA(texto, historialTexto())
     }
@@ -102,10 +161,20 @@ class SavingsAIActivity : AppCompatActivity() {
                 val regex = Regex("""\[\[MOV:(\{.*?\})\]\]""", RegexOption.DOT_MATCHES_ALL)
                 val etiqueta = regex.find(respuesta.texto)
                 val limpio = regex.replace(respuesta.texto, "")
-                agregarMensaje(ChatMessage(textoPlano(limpio), esUsuario = false))
+                val mensajeIA = ChatMessage(textoPlano(limpio), esUsuario = false)
+                agregarMensaje(mensajeIA)
+                viewModel.guardarMensajeChat(mensajeIA)
                 etiqueta?.let { confirmarMovimiento(it.groupValues[1]) }
             }
             viewModel.consumirRespuestaIA()
+        }
+
+        viewModel.historialChat.observe(this) { guardado ->
+            if (guardado == null) return@observe
+            adapter.reemplazarMensajes(if (guardado.isEmpty()) listOf(mensajeBienvenida()) else guardado)
+            rvChat.scrollToPosition(adapter.itemCount - 1)
+            historialCargado = true
+            viewModel.consumirHistorialChat()
         }
 
         viewModel.cargandoIA.observe(this) { cargando ->
@@ -166,8 +235,11 @@ class SavingsAIActivity : AppCompatActivity() {
 
     /** Conversación reciente para que Gemini mantenga el hilo. */
     private fun historialTexto(): String =
-        conversacion.takeLast(8).joinToString("\n") { mensaje ->
-            val autor = if (mensaje.esUsuario) "Usuario" else "BudgetIA"
-            "$autor: ${mensaje.texto.take(600)}"
-        }
+        conversacion
+            .filterNot { it.texto.startsWith("⚠️") }          // los avisos de error no son parte del diálogo
+            .takeLast(8)
+            .joinToString("\n") { mensaje ->
+                val autor = if (mensaje.esUsuario) "Usuario" else "BudgetIA"
+                "$autor: ${mensaje.texto.take(400)}"          // 8 × ~410 caracteres cabe en el límite del proxy (4.000)
+            }
 }

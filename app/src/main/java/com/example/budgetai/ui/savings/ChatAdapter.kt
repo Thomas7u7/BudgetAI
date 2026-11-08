@@ -1,5 +1,6 @@
 package com.example.budgetai.ui.savings
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -32,5 +33,13 @@ class ChatAdapter(private val mensajes: MutableList<ChatMessage>) :
     fun agregarMensaje(mensaje: ChatMessage) {
         mensajes.add(mensaje)
         notifyItemInserted(mensajes.size - 1)
+    }
+
+    /** Reemplaza toda la conversación (al cargar el historial o al borrarlo). */
+    @SuppressLint("NotifyDataSetChanged")
+    fun reemplazarMensajes(nuevos: List<ChatMessage>) {
+        mensajes.clear()
+        mensajes.addAll(nuevos)
+        notifyDataSetChanged()
     }
 }

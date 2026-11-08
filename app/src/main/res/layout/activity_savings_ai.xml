@@ -34,13 +34,39 @@
         </FrameLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="BudgetIA: tu consultor"
             android:textColor="@color/text_primary"
             android:textSize="17sp"
             android:fontFamily="@font/outfit_bold"/>
+
+        <TextView
+            android:id="@+id/btnHistorial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_field"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="6dp"
+            android:text="Historial"
+            android:textColor="@color/text_primary"
+            android:textSize="11sp"
+            android:fontFamily="@font/geist_regular"/>
+
+        <TextView
+            android:id="@+id/btnNuevoChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bg_button_primary"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="6dp"
+            android:text="+ Nuevo"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            android:fontFamily="@font/geist_bold"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
