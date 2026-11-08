@@ -86,6 +86,13 @@ class UserRepository {
         // Firestore no borra subcolecciones en cascada: hay que eliminarlas antes del documento.
         eliminarColeccion(usuarioRef.collection("movements"))
         eliminarColeccion(usuarioRef.collection("goals"))
+        // El historial del chat es secundario: si falla, no debe impedir borrar la cuenta.
+        runCatching {
+            usuarioRef.collection("chats").get().await().documents.forEach { chat ->
+                eliminarColeccion(chat.reference.collection("messages"))
+            }
+            eliminarColeccion(usuarioRef.collection("chats"))
+        }
         usuarioRef.collection("savingsGoals").get().await().documents.forEach { meta ->
             eliminarColeccion(meta.reference.collection("movements"))
         }
