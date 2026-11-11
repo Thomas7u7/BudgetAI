@@ -1,0 +1,4 @@
+modelo,correctas,n,correctas_coloquiales,n_coloquiales,cifras_por_revisar,lat_mediana_ms,tokens_out,costo_por_1000_usd,puntaje_base
+gemini-3.6-flash,10,10,3,3,2,1682,104,0.9240,80.6
+qwen/qwen3.8-27b,9,10,2,3,1,609,84,0.9050,78.7
+nvidia/nemotron-3-ultra-550b-a55b:free,10,10,3,3,2,3596,146,0.0000,88.7
